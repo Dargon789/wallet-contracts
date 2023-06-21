@@ -77,8 +77,8 @@ contract SequenceBaseSigTest is AdvTest {
   }
 
   function test_subdigest_Fuzz_Address(bytes32 _digest, address _addr1, address _addr2) external {
-    _addr1 = boundNoSys(_addr1);
-    _addr2 = boundNoSys(_addr2);
+    boundNoSys(_addr1);
+    boundNoSys(_addr2);
 
     vm.etch(_addr1, address(lib).code);
     vm.etch(_addr2, address(lib).code);
@@ -276,7 +276,7 @@ contract SequenceBaseSigTest is AdvTest {
   }
 
   function test_recoverBranch_Fail_InvalidFlag(uint8 _flag, bytes23 _hash, bytes calldata _sufix) external {
-    _flag = uint8(boundDiff(_flag, FLAG_SIGNATURE, FLAG_ADDRESS, FLAG_DYNAMIC_SIGNATURE, FLAG_NODE, FLAG_BRANCH, FLAG_SUBDIGEST, FLAG_NESTED));
+    uint8(boundDiff(_flag, FLAG_SIGNATURE, FLAG_ADDRESS, FLAG_DYNAMIC_SIGNATURE, FLAG_NODE, FLAG_BRANCH, FLAG_SUBDIGEST, FLAG_NESTED));
 
     vm.expectRevert(abi.encodeWithSignature('InvalidSignatureFlag(uint256)', _flag));
     lib.recoverBranch(_hash, abi.encodePacked(_flag, _sufix));
