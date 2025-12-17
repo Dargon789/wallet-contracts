@@ -10,8 +10,6 @@ import "@tenderly/hardhat-tenderly"
 import 'hardhat-gas-reporter'
 import 'solidity-coverage'
 
-import './utils/benchmarker'
-
 const ganacheNetwork = {
   url: 'http://127.0.0.1:8545',
   blockGasLimit: 6000000000
@@ -19,37 +17,36 @@ const ganacheNetwork = {
 
 const config: HardhatUserConfig = {
   solidity: {
-    version: '0.8.18',
+    version: '0.7.6',
     settings: {
       optimizer: {
         enabled: true,
-        runs: 500000
+        runs: 999999,
+        details: {
+          yul: true
+        }
       }
     }
   },
+  paths: {
+    root: 'src',
+    tests: '../tests'
+  },
   networks: {
+    binance: networkConfig('binance'),
     mainnet: networkConfig('mainnet'),
     ropsten: networkConfig('ropsten'),
+    rinkeby: networkConfig('rinkeby'),
     kovan: networkConfig('kovan'),
     goerli: networkConfig('goerli'),
-    polygon: networkConfig('polygon'),
-    polygonZkevm: networkConfig('polygon-zkevm'),
+    matic: networkConfig('matic'),
     mumbai: networkConfig('mumbai'),
     arbitrum: networkConfig('arbitrum'),
-    arbitrumGoerli: networkConfig('arbitrum-goerli'),
-    arbitrumNova: networkConfig('arbitrum-nova'),
-    optimism: networkConfig('optimism'),
-    bnb: networkConfig('bnb'),
-    bnbTestnet: networkConfig('bnb-testnet'),
-    gnosis: networkConfig('gnosis'),
+    arbitrumTestnet: networkConfig('arbitrum-testnet'),
     avalanche: networkConfig('avalanche'),
-    avalancheFuji: networkConfig('avalanche-fuji'),
     ganache: ganacheNetwork,
     coverage: {
       url: 'http://localhost:8555'
-    },
-    hardhat: {
-      blockGasLimit: 60000000
     }
   },
   etherscan: {
