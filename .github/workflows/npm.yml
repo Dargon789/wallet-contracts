@@ -63,6 +63,25 @@ jobs:
         with:
           persist-credentials: false
 
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@735343b667d3e6f658f44d0eca948eb6282f2b76 # v2
+        with:
+          bun-version: latest
+
+      - name: Setup Node (for npm publish auth)
+        uses: actions/setup-node@v5
+        with:
+          node-version: "24"
+          registry-url: "https://registry.npmjs.org"
+
+      - name: Install Dependencies
+        working-directory: ./npm
+        run: bun install --frozen-lockfile
+
+      - name: Transpile TS -> JS
+        working-directory: ./npm
+        run: bun run build
+
       - name: Set Isolated Artifact Directory
         id: paths
         run: |
@@ -86,25 +105,6 @@ jobs:
           path: ${{ steps.paths.outputs.artifact_dir }}
           github-token: ${{ secrets.GITHUB_TOKEN }}
           run-id: ${{ github.event.workflow_run.id || inputs.run_id }}
-
-      - name: Setup Bun
-        uses: oven-sh/setup-bun@735343b667d3e6f658f44d0eca948eb6282f2b76 # v2
-        with:
-          bun-version: latest
-
-      - name: Setup Node (for npm publish auth)
-        uses: actions/setup-node@v5
-        with:
-          node-version: "24"
-          registry-url: "https://registry.npmjs.org"
-
-      - name: Install Dependencies
-        working-directory: ./npm
-        run: bun install --frozen-lockfile
-
-      - name: Transpile TS -> JS
-        working-directory: ./npm
-        run: bun run build
 
       - name: Derive RELEASE_VERSION
         id: release-version
