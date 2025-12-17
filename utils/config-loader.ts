@@ -3,23 +3,7 @@ import * as path from 'path'
 import { HttpNetworkConfig } from 'hardhat/types'
 import { ethers } from 'ethers'
 
-type EthereumNetworksTypes =
-  | 'mainnet'
-  | 'ropsten'
-  | 'kovan'
-  | 'goerli'
-  | 'polygon'
-  | 'polygon-zkevm'
-  | 'mumbai'
-  | 'arbitrum'
-  | 'arbitrum-goerli'
-  | 'arbitrum-nova'
-  | 'optimism'
-  | 'bnb'
-  | 'bnb-testnet'
-  | 'gnosis'
-  | 'avalanche'
-  | 'avalanche-fuji'
+type EthereumNetworksTypes = 'rinkeby' | 'ropsten' | 'kovan' | 'goerli' | 'mainnet' | 'mumbai' | 'matic' | 'arbitrum' | 'arbitrum-testnet'
 
 export const getEnvConfig = (env: string) => {
   const envFile = path.resolve(__dirname, `../config/${env}.env`)
@@ -35,6 +19,10 @@ export const getEnvConfig = (env: string) => {
 
 export const networkGasMultiplier = (network: EthereumNetworksTypes): number => {
   switch (network) {
+    case 'arbitrum-testnet':
+    case 'arbitrum':
+      return 5
+
     default:
       return 1
   }
@@ -44,41 +32,20 @@ export const networkRpcUrl = (network: EthereumNetworksTypes): string => {
   const config = getEnvConfig('PROD')
 
   switch (network) {
+    case 'rinkeby':
+      return 'https://rpc.ankr.com/eth_rinkeby'
+
     case 'mumbai':
-      return 'https://endpoints.omniatech.io/v1/matic/mumbai/public'
+      return 'https://rpc-mumbai.matic.today/'
 
-    case 'polygon':
-      return 'https://nodes.sequence.app/polygon'
+    case 'matic':
+      return 'https://polygon-rpc.com'
 
-    case 'polygon-zkevm':
-      return 'https://zkevm-rpc.com'
-
+    case 'arbitrum-testnet':
+      return 'https://rinkeby.arbitrum.io/rpc'
+    
     case 'arbitrum':
-      return 'https://endpoints.omniatech.io/v1/arbitrum/one/public'
-
-    case 'arbitrum-goerli':
-      return 'https://goerli-rollup.arbitrum.io/rpc'
-
-    case 'arbitrum-nova':
-      return 'https://nova.arbitrum.io/rpc'
-
-    case 'optimism':
-      return 'https://endpoints.omniatech.io/v1/op/mainnet/public'
-
-    case 'bnb':
-      return 'https://bsc-dataseed3.binance.org'
-
-    case 'bnb-testnet':
-      return 'https://endpoints.omniatech.io/v1/bsc/testnet/public'
-
-    case 'gnosis':
-      return 'https://gnosis-mainnet.public.blastapi.io'
-
-    case 'avalanche':
-      return 'https://endpoints.omniatech.io/v1/avax/mainnet/public'
-
-    case 'avalanche-fuji':
-      return 'https://endpoints.omniatech.io/v1/avax/fuji/public'
+      return 'https://arb1.arbitrum.io/rpc'
 
     default:
       return `https://${network}.infura.io/v3/${config['INFURA_API_KEY']}`
@@ -86,65 +53,45 @@ export const networkRpcUrl = (network: EthereumNetworksTypes): string => {
 }
 
 export const networkChainId = (network: EthereumNetworksTypes): number => {
-  switch (network) {
-    case 'mainnet':
-      return 1
+  const config = getEnvConfig('PROD')
 
+  switch (network) {
+    case 'mumbai':
+      return 80001
+    
     case 'ropsten':
       return 3
+
+    case 'matic':
+      return 137
+
+    case 'arbitrum-testnet':
+      return 421611
+    
+    case 'arbitrum':
+      return 42161
+
+    case 'rinkeby':
+      return 4
 
     case 'goerli':
       return 5
 
+    case 'mainnet':
+      return 1
+
     case 'kovan':
       return 42
-
-    case 'mumbai':
-      return 80001
-
-    case 'polygon':
-      return 137
-
-    case 'polygon-zkevm':
-      return 1101
-
-    case 'arbitrum':
-      return 42161
-
-    case 'arbitrum-goerli':
-      return 421613
-
-    case 'arbitrum-nova':
-      return 42170
-
-    case 'optimism':
-      return 10
-
-    case 'bnb':
-      return 56
-
-    case 'bnb-testnet':
-      return 97
-
-    case 'gnosis':
-      return 100
-
-    case 'avalanche':
-      return 43114
-
-    case 'avalanche-fuji':
-      return 43113
   }
 }
 
 export const networkConfig = (network: EthereumNetworksTypes): HttpNetworkConfig & { etherscan?: string } => {
-  const prodConfig = getEnvConfig('PROD')
-  const networkConfig = getEnvConfig(network)
+  const config = getEnvConfig('PROD')
   return {
     url: networkRpcUrl(network),
     chainId: networkChainId(network),
     accounts: {
-      mnemonic: networkConfig['ETH_MNEMONIC'] ?? prodConfig['ETH_MNEMONIC'],
+      mnemonic: config['ETH_MNEMONIC'],
       initialIndex: 0,
       count: 10,
       path: `m/44'/60'/0'/0`,
@@ -155,6 +102,6 @@ export const networkConfig = (network: EthereumNetworksTypes): HttpNetworkConfig
     gasMultiplier: networkGasMultiplier(network),
     timeout: 20000,
     httpHeaders: {},
-    etherscan: networkConfig['ETHERSCAN'] ?? prodConfig['ETHERSCAN']
+    etherscan: config['ETHERSCAN']
   }
 }

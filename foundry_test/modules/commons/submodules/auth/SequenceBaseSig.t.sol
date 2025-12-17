@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: Apache-2.0
-pragma solidity 0.8.18;
+pragma solidity 0.8.17;
 
 import "contracts/modules/commons/submodules/auth/SequenceBaseSig.sol";
 
@@ -7,20 +7,20 @@ import "foundry_test/base/AdvTest.sol";
 
 
 contract SequenceBaseSigImp {
-  function subdigest(bytes32 _digest) external view returns (bytes32) {
-    return SequenceBaseSig.subdigest(_digest);
+  function subDigest(bytes32 _digest) external view returns (bytes32) {
+    return SequenceBaseSig.subDigest(_digest);
   }
 
-  function leafForAddressAndWeight(address _addr, uint96 _weight) external pure returns (bytes32) {
-    return SequenceBaseSig._leafForAddressAndWeight(_addr, _weight);
+  function leafForWeightAndAddress(address _addr, uint96 _weight) external pure returns (bytes32) {
+    return SequenceBaseSig._leafForWeightAndAddress(_addr, _weight);
   }
 
   function recoverBranch(bytes32 _digest, bytes calldata _signature) external view returns (uint256 weight, bytes32 root) {
     return SequenceBaseSig.recoverBranch(_digest, _signature);
   }
 
-  function recover(bytes32 _subdigest, bytes calldata _signature) external view returns (uint256 threshold, uint256 weight, bytes32 imageHash, uint256 checkpoint) {
-    return SequenceBaseSig.recover(_subdigest, _signature);
+  function recover(bytes32 _subDigest, bytes calldata _signature) external view returns (uint256 threshold, uint256 weight, bytes32 imageHash, uint256 checkpoint) {
+    return SequenceBaseSig.recover(_subDigest, _signature);
   }
 }
 
@@ -39,7 +39,7 @@ contract SequenceBaseSigTest is AdvTest {
     lib = new SequenceBaseSigImp();
   }
 
-  function test_subdigest(bytes32 _digest, uint256 _chainId) external {
+  function test_subDigest(bytes32 _digest, uint256 _chainId) external {
     _chainId = bound(_chainId, 0, type(uint64).max);
 
     bytes32 expected = keccak256(
@@ -52,64 +52,64 @@ contract SequenceBaseSigTest is AdvTest {
     );
 
     vm.chainId(_chainId);
-    bytes32 actual = lib.subdigest(_digest);
+    bytes32 actual = lib.subDigest(_digest);
     assertEq(actual, expected);
   }
 
-  function test_subdigest_Fuzz_ChainId(bytes32 _digest, uint256 _chainId1, uint256 _chainId2) external {
+  function test_subDigest_Fuzz_ChainId(bytes32 _digest, uint256 _chainId1, uint256 _chainId2) external {
     _chainId1 = bound(_chainId1, 0, type(uint64).max);
     _chainId2 = bound(_chainId2, 0, type(uint64).max);
 
     vm.chainId(_chainId1);
-    bytes32 subdigest1 = lib.subdigest(_digest);
+    bytes32 subDigest1 = lib.subDigest(_digest);
 
     vm.chainId(_chainId2);
-    bytes32 subdigest2 = lib.subdigest(_digest);
+    bytes32 subDigest2 = lib.subDigest(_digest);
 
-    assertTrue(subdigest1 != subdigest2 || _chainId1 == _chainId2);
+    assertTrue(subDigest1 != subDigest2 || _chainId1 == _chainId2);
   }
 
-  function test_subdigest_Fuzz_Digest(bytes32 _digest1, bytes32 _digest2) external {
-    bytes32 subdigest1 = lib.subdigest(_digest1);
-    bytes32 subdigest2 = lib.subdigest(_digest2);
+  function test_subDigest_Fuzz_Digest(bytes32 _digest1, bytes32 _digest2) external {
+    bytes32 subDigest1 = lib.subDigest(_digest1);
+    bytes32 subDigest2 = lib.subDigest(_digest2);
 
-    assertTrue(subdigest1 != subdigest2 || _digest1 == _digest2);
+    assertTrue(subDigest1 != subDigest2 || _digest1 == _digest2);
   }
 
-  function test_subdigest_Fuzz_Address(bytes32 _digest, address _addr1, address _addr2) external {
-    boundNoSys(_addr1);
-    boundNoSys(_addr2);
+  function test_subDigest_Fuzz_Address(bytes32 _digest, address _addr1, address _addr2) external {
+    _addr1 = boundNoSys(_addr1);
+    _addr2 = boundNoSys(_addr2);
 
     vm.etch(_addr1, address(lib).code);
     vm.etch(_addr2, address(lib).code);
 
-    bytes32 subdigest1 = SequenceBaseSigImp(_addr1).subdigest(_digest);
-    bytes32 subdigest2 = SequenceBaseSigImp(_addr2).subdigest(_digest);
+    bytes32 subDigest1 = SequenceBaseSigImp(_addr1).subDigest(_digest);
+    bytes32 subDigest2 = SequenceBaseSigImp(_addr2).subDigest(_digest);
 
-    assertTrue(subdigest1 != subdigest2 || _addr1 == _addr2);
+    assertTrue(subDigest1 != subDigest2 || _addr1 == _addr2);
   }
 
-  function test_leafForAddressAndWeight(address _addr, uint96 _weight) external {
+  function test_leafForWeightAndAddress(address _addr, uint96 _weight) external {
     bytes32 expected = abi.decode(abi.encodePacked(_weight, _addr), (bytes32));
-    bytes32 actual = lib.leafForAddressAndWeight(_addr, _weight);
+    bytes32 actual = lib.leafForWeightAndAddress(_addr, _weight);
     assertEq(expected, actual);
   }
 
-  function test_leafForAddressAndWeight_fuzz(address _addr1, uint96 _weight1, address _addr2, uint96 _weight2) external {
-    bytes32 encoded1 = lib.leafForAddressAndWeight(_addr1, _weight1);
-    bytes32 encoded2 = lib.leafForAddressAndWeight(_addr2, _weight2);
+  function test_leafForWeightAndAddress_fuzz(address _addr1, uint96 _weight1, address _addr2, uint96 _weight2) external {
+    bytes32 encoded1 = lib.leafForWeightAndAddress(_addr1, _weight1);
+    bytes32 encoded2 = lib.leafForWeightAndAddress(_addr2, _weight2);
     assertEq(encoded1 == encoded2, _addr1 == _addr2 && _weight1 == _weight2);
   }
 
-  function test_leafForHardcodedSubdigest_fuzz(bytes32 _subdigest1, bytes32 _subdigest2) external {
-    bytes32 encoded1 = SequenceBaseSig._leafForHardcodedSubdigest(_subdigest1);
-    bytes32 encoded2 = SequenceBaseSig._leafForHardcodedSubdigest(_subdigest2);
-    assertEq(encoded1 == encoded2, _subdigest1 == _subdigest2);
+  function test_leafForHardcodedSubdigest_fuzz(bytes32 _subDigest1, bytes32 _subDigest2) external {
+    bytes32 encoded1 = SequenceBaseSig._leafForHardcodedSubdigest(_subDigest1);
+    bytes32 encoded2 = SequenceBaseSig._leafForHardcodedSubdigest(_subDigest2);
+    assertEq(encoded1 == encoded2, _subDigest1 == _subDigest2);
   }
 
-  function test_leafForHardcodedSubdigest_fuzz_addr(address _addr, uint96 _weight, bytes32 _subdigest) external {
-    bytes32 encoded1 = SequenceBaseSig._leafForHardcodedSubdigest(_subdigest);
-    bytes32 encoded2 = SequenceBaseSig._leafForAddressAndWeight(_addr, _weight);
+  function test_leafForHardcodedSubdigest_fuzz_addr(address _addr, uint96 _weight, bytes32 _subDigest) external {
+    bytes32 encoded1 = SequenceBaseSig._leafForHardcodedSubdigest(_subDigest);
+    bytes32 encoded2 = SequenceBaseSig._leafForWeightAndAddress(_addr, _weight);
     assertTrue(encoded1 != encoded2);
   }
 
@@ -134,18 +134,18 @@ contract SequenceBaseSigTest is AdvTest {
     uint256 _nodeWeight
   ) external {
     bytes32 encoded1 = SequenceBaseSig._leafForNested(_node, _threshold, _nodeWeight);
-    bytes32 encoded2 = SequenceBaseSig._leafForAddressAndWeight(_addr, _weight);
+    bytes32 encoded2 = SequenceBaseSig._leafForWeightAndAddress(_addr, _weight);
     assertTrue(encoded1 != encoded2);
   }
 
   function test_leafForNested_fuzz_subdigest(
-    bytes32 _subdigest,
+    bytes32 _subDigest,
     bytes32 _node,
     uint256 _threshold,
     uint256 _weight
   ) external {
     bytes32 encoded1 = SequenceBaseSig._leafForNested(_node, _threshold, _weight);
-    bytes32 encoded2 = SequenceBaseSig._leafForHardcodedSubdigest(_subdigest);
+    bytes32 encoded2 = SequenceBaseSig._leafForHardcodedSubdigest(_subDigest);
     assertTrue(encoded1 != encoded2);
   }
 
@@ -158,7 +158,7 @@ contract SequenceBaseSigTest is AdvTest {
       uint8 randomWeight = uint8(bound(uint256(keccak256(abi.encode(_addresses[i], i, _seed))), 0, type(uint8).max));
 
       signature = abi.encodePacked(signature, FLAG_ADDRESS, randomWeight, _addresses[i]);
-      bytes32 node = lib.leafForAddressAndWeight(_addresses[i], randomWeight);
+      bytes32 node = lib.leafForWeightAndAddress(_addresses[i], randomWeight);
       root = root != bytes32(0) ? keccak256(abi.encodePacked(root, node)) : node;
     }
 
@@ -211,7 +211,7 @@ contract SequenceBaseSigTest is AdvTest {
         }
       }
 
-      bytes32 node = lib.leafForAddressAndWeight(addr, randomWeight);
+      bytes32 node = lib.leafForWeightAndAddress(addr, randomWeight);
       root = root != bytes32(0) ? keccak256(abi.encodePacked(root, node)) : node;
     }
 
@@ -255,7 +255,7 @@ contract SequenceBaseSigTest is AdvTest {
         }
       }
 
-      bytes32 node = lib.leafForAddressAndWeight(addr, randomWeight);
+      bytes32 node = lib.leafForWeightAndAddress(addr, randomWeight);
       // Hash in reverse order requires branching, root/node -> node/root
       root = root != bytes32(0) ? keccak256(abi.encodePacked(node, root)) : node;
     }
@@ -276,7 +276,7 @@ contract SequenceBaseSigTest is AdvTest {
   }
 
   function test_recoverBranch_Fail_InvalidFlag(uint8 _flag, bytes23 _hash, bytes calldata _sufix) external {
-    uint8(boundDiff(_flag, FLAG_SIGNATURE, FLAG_ADDRESS, FLAG_DYNAMIC_SIGNATURE, FLAG_NODE, FLAG_BRANCH, FLAG_SUBDIGEST, FLAG_NESTED));
+    _flag = uint8(boundDiff(_flag, FLAG_SIGNATURE, FLAG_ADDRESS, FLAG_DYNAMIC_SIGNATURE, FLAG_NODE, FLAG_BRANCH, FLAG_SUBDIGEST, FLAG_NESTED));
 
     vm.expectRevert(abi.encodeWithSignature('InvalidSignatureFlag(uint256)', _flag));
     lib.recoverBranch(_hash, abi.encodePacked(_flag, _sufix));
