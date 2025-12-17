@@ -39,13 +39,12 @@ pnpm deploy --rpc-url $RPC_URL --broadcast
 
 ### Installation
 
-Clone the repository, including git submodules.
+First, ensure you have `pnpm` installed. You can find installation instructions here: https://pnpm.io/installation
 
-https://pnpm.io/installation
-
-Install dependencies with `pnpm`.
-
-Compile the contracts with `pnpm build`.
+Next, clone the repository, including its submodules:
+```bash
+git clone --recurse-submodules https://github.com/Dargon789/contracts-library.git
+cd contracts-library
 
 ### Testing
 
