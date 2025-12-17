@@ -3,23 +3,7 @@ import * as path from 'path'
 import { HttpNetworkConfig } from 'hardhat/types'
 import { ethers } from 'ethers'
 
-type EthereumNetworksTypes =
-  | 'mainnet'
-  | 'ropsten'
-  | 'kovan'
-  | 'goerli'
-  | 'polygon'
-  | 'polygon-zkevm'
-  | 'mumbai'
-  | 'arbitrum'
-  | 'arbitrum-goerli'
-  | 'arbitrum-nova'
-  | 'optimism'
-  | 'bnb'
-  | 'bnb-testnet'
-  | 'gnosis'
-  | 'avalanche'
-  | 'avalanche-fuji'
+type EthereumNetworksTypes = 'ropsten' | 'kovan' | 'goerli' | 'mainnet' | 'mumbai' | 'polygon' | 'arbitrum' | 'arbitrum-goerli' | 'arbitrum-nova' | 'optimism' | 'bnb' | 'gnosis' | 'polygon-zkevm' | 'avalanche' | 'bnb-testnet' | 'avalanche-fuji'
 
 export const getEnvConfig = (env: string) => {
   const envFile = path.resolve(__dirname, `../config/${env}.env`)
@@ -50,15 +34,12 @@ export const networkRpcUrl = (network: EthereumNetworksTypes): string => {
     case 'polygon':
       return 'https://nodes.sequence.app/polygon'
 
-    case 'polygon-zkevm':
-      return 'https://zkevm-rpc.com'
-
-    case 'arbitrum':
-      return 'https://endpoints.omniatech.io/v1/arbitrum/one/public'
-
     case 'arbitrum-goerli':
       return 'https://goerli-rollup.arbitrum.io/rpc'
 
+    case 'arbitrum':
+      return 'https://endpoints.omniatech.io/v1/arbitrum/one/public'
+    
     case 'arbitrum-nova':
       return 'https://nova.arbitrum.io/rpc'
 
@@ -68,14 +49,17 @@ export const networkRpcUrl = (network: EthereumNetworksTypes): string => {
     case 'bnb':
       return 'https://bsc-dataseed3.binance.org'
 
-    case 'bnb-testnet':
-      return 'https://endpoints.omniatech.io/v1/bsc/testnet/public'
-
     case 'gnosis':
       return 'https://gnosis-mainnet.public.blastapi.io'
 
+    case 'polygon-zkevm':
+      return 'https://zkevm-rpc.com'
+
     case 'avalanche':
       return 'https://endpoints.omniatech.io/v1/avax/mainnet/public'
+
+    case 'bnb-testnet':
+      return 'https://endpoints.omniatech.io/v1/bsc/testnet/public'
 
     case 'avalanche-fuji':
       return 'https://endpoints.omniatech.io/v1/avax/fuji/public'
@@ -87,32 +71,29 @@ export const networkRpcUrl = (network: EthereumNetworksTypes): string => {
 
 export const networkChainId = (network: EthereumNetworksTypes): number => {
   switch (network) {
-    case 'mainnet':
-      return 1
+    case 'mumbai':
+      return 80001
 
     case 'ropsten':
       return 3
 
-    case 'goerli':
-      return 5
-
-    case 'kovan':
-      return 42
-
-    case 'mumbai':
-      return 80001
-
     case 'polygon':
       return 137
 
-    case 'polygon-zkevm':
-      return 1101
+    case 'arbitrum-goerli':
+      return 421613
 
     case 'arbitrum':
       return 42161
 
-    case 'arbitrum-goerli':
-      return 421613
+    case 'goerli':
+      return 5
+
+    case 'mainnet':
+      return 1
+
+    case 'kovan':
+      return 42
 
     case 'arbitrum-nova':
       return 42170
@@ -123,14 +104,17 @@ export const networkChainId = (network: EthereumNetworksTypes): number => {
     case 'bnb':
       return 56
 
-    case 'bnb-testnet':
-      return 97
-
     case 'gnosis':
       return 100
 
+    case 'polygon-zkevm':
+      return 1101
+
     case 'avalanche':
       return 43114
+
+    case 'bnb-testnet':
+      return 97
 
     case 'avalanche-fuji':
       return 43113

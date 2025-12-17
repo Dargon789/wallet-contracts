@@ -1,4 +1,4 @@
-import { HardhatUserConfig, task } from 'hardhat/config'
+import { HardhatUserConfig } from 'hardhat/config'
 import { networkConfig } from './utils/config-loader'
 
 import '@nomiclabs/hardhat-truffle5'
@@ -23,7 +23,7 @@ const config: HardhatUserConfig = {
     settings: {
       optimizer: {
         enabled: true,
-        runs: 500000,
+        runs: 500000
       }
     }
   },
@@ -45,6 +45,9 @@ const config: HardhatUserConfig = {
     avalanche: networkConfig('avalanche'),
     avalancheFuji: networkConfig('avalanche-fuji'),
     ganache: ganacheNetwork,
+    coverage: {
+      url: 'http://localhost:8555'
+    },
     hardhat: {
       blockGasLimit: 60000000
     }
