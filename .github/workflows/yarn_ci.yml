@@ -78,7 +78,7 @@ jobs:
           version: nightly
 
       - name: Run tests
-        run: FOUNDRY_FUZZ_RUNS=1024 forge test -vvv
+        run: FOUNDRY_FUZZ_RUNS=1024 forge test --rerun -vvv
 
   # coverage:
   #   name: Coverage
