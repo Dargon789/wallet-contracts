@@ -3,9 +3,9 @@ import { ethers as hethers } from 'hardhat'
 
 import { bytes32toAddress, CHAIN_ID, expect, expectToBeRejected, randomHex } from './utils'
 
-import { CallReceiverMock, ContractType, deploySequenceContext, ModuleMock, SequenceContext, DelegateCallMock, HookMock, HookCallerMock, GasBurnerMock, deploySequenceAutoUpdate } from './utils/contracts'
+import { CallReceiverMock, ContractType, deploySequenceContext, ModuleMock, SequenceContext, DelegateCallMock, HookMock, HookCallerMock, GasBurnerMock } from './utils/contracts'
 import { Imposter } from './utils/imposter'
-import { applyTxDefaults, computeStorageKey, digestOf, encodeNonce, imageHash, leavesOf, merkleTopology, SignatureType, subDigestOf } from './utils/sequence'
+import { applyTxDefaults, computeStorageKey, digestOf, encodeNonce, leavesOf, legacyTopology, merkleTopology, optimize2SignersTopology, printTopology, SignatureType, SimplifiedWalletConfig, subDigestOf, toSimplifiedConfig, WalletConfig } from './utils/sequence'
 import { SequenceWallet, StaticSigner } from './utils/wallet'
 
 contract('MainModule', (accounts: string[]) => {
@@ -437,83 +437,10 @@ contract('MainModule', (accounts: string[]) => {
           await expectToBeRejected(tx, `BadNonce(2, 1, 0)`)
         })
       })
-
-      describe('special nonce types', () => {
-        describe('transactions with gap nonce', () => {
-          it("Should accept a gap nonce incremented by one", async () => {
-            await wallet.sendTransactions([{}], encodeNonce(0, 1, 1))
-          })
-
-          it("Should accept a gap nonce incremented by 10", async () => {
-            await wallet.sendTransactions([{}], encodeNonce(0, 10, 1))
-          })
-
-          it("Should accept a gap nonce incremented by 2 ** 88 - 1 (max)", async () => {
-            await wallet.sendTransactions([{}], encodeNonce(0, "309485009821345068724781055", 1))
-          })
-
-          it("Should reject same gap nonce (zero)", async () => {
-            const tx = wallet.sendTransactions([{}], encodeNonce(0, 0, 1))
-            await expectToBeRejected(tx, 'BadGapNonce(0, 0, 0)')
-          })
-
-          it("Should reject same gap nonce (one)", async () => {
-            await wallet.sendTransactions([{}], encodeNonce(0, 1, 1))
-            const tx = wallet.sendTransactions([{}], encodeNonce(0, 1, 1))
-            await expectToBeRejected(tx, 'BadGapNonce(0, 1, 1)')
-          })
-
-          it("Should reject lower gap nonce", async () => {
-            await wallet.sendTransactions([{}], encodeNonce(0, 10, 1))
-
-            const tx = wallet.sendTransactions([{}], encodeNonce(0, 5, 1))
-            await expectToBeRejected(tx, 'BadGapNonce(0, 5, 10)')
-          })
-
-          it("Should use paralel gap nonces", async () => {
-            await wallet.sendTransactions([{}], encodeNonce(0, 1, 1))
-            await wallet.sendTransactions([{}], encodeNonce(1, 1, 1))
-          })
-
-          it("Should reject same nonce on different space", async () => {
-            await wallet.sendTransactions([{}], encodeNonce(5, 1, 1))
-            const tx = wallet.sendTransactions([{}], encodeNonce(5, 1, 1))
-            await expectToBeRejected(tx, 'BadGapNonce(5, 1, 1)')
-          })
-        })
-
-        describe('transactions without nonce', () => {
-          it("Should relay 3 times a transaction without nonce (no-nonce type)", async () => {
-            await wallet.sendTransactions([{}], encodeNonce(0, 0, 2))
-            await wallet.sendTransactions([{}], encodeNonce(0, 0, 2))
-            await wallet.sendTransactions([{}], encodeNonce(0, 0, 2))
-          })
-
-          it("Should fail if transaction has a non-zero nonce value", async () => {  
-            const tx = wallet.sendTransactions([{}], encodeNonce(0, 1, 2))
-            await expectToBeRejected(tx, 'ExpectedEmptyNonce(0, 1)')
-          })
-
-          it("Should fail if transaction has a non-zero space value", async () => {
-            const tx = wallet.sendTransactions([{}], encodeNonce(3, 0, 2))
-            await expectToBeRejected(tx, 'ExpectedEmptyNonce(3, 0)')
-          })
-
-          it("Should fail if transaction has a non-zero space and nonce values", async () => {
-            const tx = wallet.sendTransactions([{}], encodeNonce(29443, 65535, 2))
-            await expectToBeRejected(tx, 'ExpectedEmptyNonce(29443, 65535)')
-          })
-        })
-
-        it('Should reject bad nonce type', async () => {
-          const tx = wallet.sendTransactions([{}], encodeNonce(0, 0, 3))
-          await expectToBeRejected(tx, 'InvalidNonceType(3)')
-        })
-      })
     })
 
     it('Should reject signature with invalid flag', async () => {
-      const tx = wallet.relayTransactions([{}], '0x0001ff01')
+      const tx = wallet.relayTransactions([{}], '0x000193812833ff01')
       await expectToBeRejected(tx, 'InvalidSignatureFlag(255)')
     })
 
@@ -691,9 +618,9 @@ contract('MainModule', (accounts: string[]) => {
           }])
 
           expect(await wallet.mainModule.staticDigest(txDigest)).to.equal(expiration)
-          await wallet.mainModule.execute(tx, encodeNonce(1, 0), '0x0000')
+          await wallet.mainModule.execute(tx, encodeNonce(1, 0), '0x000000000000')
 
-          const relay2 = wallet.mainModule.execute(tx, encodeNonce(1, 0), '0x0000')
+          const relay2 = wallet.mainModule.execute(tx, encodeNonce(1, 0), '0x000000000000')
           await expectToBeRejected(relay2, `BadNonce(1, 0, 1)`)
         })
 
@@ -702,8 +629,8 @@ contract('MainModule', (accounts: string[]) => {
           const digest1 = ethers.utils.keccak256(message)
           const digest2 = ethers.utils.keccak256([])
 
-          expect(await wallet.mainModule['isValidSignature(bytes,bytes)'](digest1, '0x0000')).to.equal('0x00000000')
-          expect(await wallet.mainModule['isValidSignature(bytes,bytes)'](digest2, '0x0000')).to.equal('0x00000000')
+          expect(await wallet.mainModule['isValidSignature(bytes,bytes)'](digest1, '0x000000000000')).to.equal('0x00000000')
+          expect(await wallet.mainModule['isValidSignature(bytes,bytes)'](digest2, '0x000000000000')).to.equal('0x00000000')
 
           await wallet.sendTransactions([{
             target: wallet.address,
@@ -716,8 +643,8 @@ contract('MainModule', (accounts: string[]) => {
           expect(await wallet.mainModule.staticDigest(digest1)).to.equal(ethers.BigNumber.from(2).pow(256).sub(1))
           expect(await wallet.mainModule.staticDigest(digest2)).to.equal(ethers.BigNumber.from(2).pow(256).sub(1))
 
-          expect(await wallet.mainModule['isValidSignature(bytes,bytes)'](message, '0x0000')).to.equal('0x20c13b0b')
-          expect(await wallet.mainModule['isValidSignature(bytes32,bytes)'](digest2, '0x0000')).to.equal('0x1626ba7e')
+          expect(await wallet.mainModule['isValidSignature(bytes,bytes)'](message, '0x000000000000')).to.equal('0x20c13b0b')
+          expect(await wallet.mainModule['isValidSignature(bytes32,bytes)'](digest2, '0x000000000000')).to.equal('0x1626ba7e')
         })
 
         it('Should remove static digest', async () => {
@@ -770,9 +697,9 @@ contract('MainModule', (accounts: string[]) => {
           expect(await wallet.mainModule.staticDigest(txDigest2)).to.equal(ethers.BigNumber.from(2).pow(256).sub(1))
           expect(await wallet.mainModule.staticDigest(txDigest3)).to.equal(ethers.BigNumber.from(2).pow(256).sub(1))
 
-          await wallet.mainModule.execute(tx, encodeNonce(1, 0), '0x0000')
-          await wallet.mainModule.execute(tx, encodeNonce(2, 0), '0x00ff')
-          await wallet.mainModule.execute(tx, encodeNonce(3, 0), '0x0000')
+          await wallet.mainModule.execute(tx, encodeNonce(1, 0), '0x000000000000')
+          await wallet.mainModule.execute(tx, encodeNonce(2, 0), '0x00ff00000001')
+          await wallet.mainModule.execute(tx, encodeNonce(3, 0), '0x0000ffffffff')
         })
       })
     })
@@ -798,7 +725,7 @@ contract('MainModule', (accounts: string[]) => {
 
           const prevLeaves = leavesOf(wallet.config.topology)
           const newMerkle = merkleTopology([subDigestsMerkle, ...prevLeaves])
-          const newConfig = { threshold: wallet.config.threshold, topology: newMerkle }
+          const newConfig = { threshold: wallet.config.threshold, topology: newMerkle, checkpoint: Math.floor(Date.now() / 1000) }
 
           await wallet.deploy()
           await wallet.updateImageHash(newConfig)
@@ -821,7 +748,7 @@ contract('MainModule', (accounts: string[]) => {
 
           const prevLeaves = leavesOf(wallet.config.topology)
           const newMerkle = merkleTopology([subDigestsMerkle, ...prevLeaves])
-          const newConfig = { threshold: wallet.config.threshold, topology: newMerkle }
+          const newConfig = { threshold: wallet.config.threshold, topology: newMerkle, checkpoint: Math.floor(Date.now() / 1000) }
 
           await wallet.deploy()
           await wallet.updateImageHash(newConfig)
@@ -837,6 +764,109 @@ contract('MainModule', (accounts: string[]) => {
           }
         })
       })
+    })
+  })
+
+  describe('Nested configurations', async () => {
+    it('Should use nested configuration as a regular branch', async () => {
+      const nested = SequenceWallet.basicWallet(context, { signing: 1, iddle: 11 })
+      const simplifiedConfig = {
+        threshold: 1,
+        checkpoint: 2,
+        signers: [{
+          address: ethers.Wallet.createRandom().address,
+          weight: 1
+        }, {
+          ...toSimplifiedConfig(nested.config),
+          weight: 1
+        }]
+      }
+
+      const config = {
+        ...simplifiedConfig,
+        topology: legacyTopology(simplifiedConfig)
+      }
+
+      const wallet = new SequenceWallet({ context, config, signers: nested.signers })
+      await wallet.deploy()
+
+      await wallet.sendTransactions([])
+    })
+    it('Should use nested configuration with independent weight and threshold', async () => {
+      const nested = SequenceWallet.basicWallet(context, { signing: 2, iddle: 11 })
+      const simplifiedConfig = {
+        threshold: 5,
+        checkpoint: 2,
+        signers: [{
+          ...toSimplifiedConfig(nested.config),
+          weight: 5
+        }, {
+          address: ethers.Wallet.createRandom().address,
+          weight: 1
+        }]
+      }
+
+      const config = {
+        ...simplifiedConfig,
+        topology: merkleTopology(simplifiedConfig)
+      }
+
+      const wallet = new SequenceWallet({ context, config, signers: nested.signers })
+      await wallet.deploy()
+
+      await wallet.sendTransactions([])
+    })
+    it('Should reject nested configuration if not enough internal signing power', async () => {
+      const nested = SequenceWallet.basicWallet(context, { signing: 2, iddle: 11 })
+
+      const simplifiedConfig = {
+        threshold: 1,
+        checkpoint: 2,
+        signers: [{
+          ...toSimplifiedConfig(nested.config),
+          weight: 5
+        }, {
+          address: ethers.Wallet.createRandom().address,
+          weight: 1
+        }]
+      }
+
+      const config = {
+        ...simplifiedConfig,
+        topology: merkleTopology(simplifiedConfig)
+      }
+
+      const wallet = new SequenceWallet({ context, config, signers: [nested.signers[0]] })
+      await wallet.deploy()
+
+      const tx = wallet.sendTransactions([])
+      await expectToBeRejected(tx, 'InvalidSignature')
+    })
+    it('Should limit nested signing power', async () => {
+      const nested = SequenceWallet.basicWallet(context, { signing: 10 })
+
+      const simplifiedConfig = {
+        threshold: 2,
+        checkpoint: 2,
+        signers: [{
+          ...toSimplifiedConfig(nested.config),
+          weight: 1
+        }, {
+          address: ethers.Wallet.createRandom().address,
+          weight: 1
+        }]
+      }
+
+      const config = {
+        ...simplifiedConfig,
+        topology: merkleTopology(simplifiedConfig)
+      }
+
+      const wallet = new SequenceWallet({ context, config, signers: nested.signers })
+      await wallet.deploy()
+
+      const tx = wallet.sendTransactions([])
+      await expectToBeRejected(tx, 'InvalidSignature')
     })
   })
 
@@ -1338,70 +1368,6 @@ contract('MainModule', (accounts: string[]) => {
           expect(ethers.utils.defaultAbiCoder.encode(['bytes32'], [storageValue])).to.equal(walletc.imageHash)
         })
       })
-    })
-  })
-
-  describe('Auto upgradeable modules', async () => {
-    let autoContext: Awaited<ReturnType<typeof deploySequenceAutoUpdate>>
-
-    beforeEach(async () => {
-      autoContext = await deploySequenceAutoUpdate(context)
-      wallet = SequenceWallet.basicWallet(autoContext, { signing: 2 })
-      await wallet.deploy()
-    })
-
-    it('Should send a transaction', async () => {
-      await wallet.sendTransactions([{}])
-    })
-
-    it('Should update configuration', async () => {
-      const newConfig = SequenceWallet.basicWallet(autoContext, { signing: 2 }).config
-      await wallet.updateImageHash(newConfig)
-      expect(await wallet.mainModuleUpgradable.imageHash()).to.equal(imageHash(newConfig))
-    })
-
-    it('Should update mainModule template', async () => {
-      await autoContext.repository.setModule(
-        autoContext.moduleKeys.keyMainModule,
-        callReceiver.address
-      )
-
-      const converted = CallReceiverMock.attach(wallet.address)
-      await converted.testCall(11, [])
-      expect(await converted.lastValA()).to.equal(11)
-
-      const tx = wallet.sendTransactions([{}])
-      await expect(tx).to.be.rejected
-    })
-
-    it('Should update mainModuleUpgradeable template', async () => {
-      await autoContext.repository.setModule(
-        autoContext.moduleKeys.keyMainModuleUpgradable,
-        callReceiver.address
-      )
-
-      await wallet.sendTransactions([{}])
-
-      const newConfig = SequenceWallet.basicWallet(autoContext, { signing: 2 }).config
-      await wallet.updateImageHash(newConfig)
-      wallet = wallet.useAddress(wallet.address).useConfig(newConfig)
-      
-      const converted = CallReceiverMock.attach(wallet.address)
-      await converted.testCall(11, [])
-      expect(await converted.lastValA()).to.equal(11)
-
-      const tx = wallet.sendTransactions([{}])
-      await expect(tx).to.be.rejected
-    })
-
-    it('Should fail to update repository if not owner', async () => {
-      const notOwner = hethers.provider.getSigner(1)
-      const tx = autoContext.repository.connect(notOwner).setModule(
-        autoContext.moduleKeys.keyMainModule,
-        callReceiver.address
-      )
-
-      await expect(tx).to.be.rejected
     })
   })
 
@@ -2027,6 +1993,59 @@ contract('MainModule', (accounts: string[]) => {
       expect(await callReceiver.lastValB()).to.equal("0x")
       expect(await callReceiver2.lastValB()).to.equal("0x")
       expect(await callReceiver3.lastValB()).to.equal(expected3)
+    })
+  })
+
+  describe('Update imageHash and IPFS at once', () => {
+    ([{
+      name: 'using MainModule',
+      beforeEach: () => {},
+    }, {
+      name: 'using MainModuleUpgradable',
+      beforeEach: async () => {
+        const newConfig = SequenceWallet.basicWallet(context)
+        await wallet.updateImageHash(newConfig.imageHash)
+        wallet = wallet.useAddress().useConfig(newConfig.config).useSigners(newConfig.signers)
+      }
+    }]).map((c) => {
+      describe(c.name, () => {
+        it('Should update imageHash and IPFS at the same time', async () => {
+          const ipfs = randomHex(32)
+          const imageHash = randomHex(32)
+
+          await wallet.sendTransactions([{
+            target: wallet.address,
+            data: wallet.mainModule.interface.encodeFunctionData(
+              'updateImageHashAndIPFS',
+              [imageHash, ipfs]
+            )
+          }])
+
+          expect(await wallet.mainModuleUpgradable.imageHash()).to.equal(imageHash)
+          expect(await wallet.mainModule.ipfsRootBytes32()).to.equal(ipfs)
+        })
+
+        it('Should fail to update imageHash and IPFS if caller is not self', async () => {
+          const tx = wallet.mainModule.updateImageHashAndIPFS(randomHex(32), randomHex(32))
+          await expectToBeRejected(tx, 'OnlySelf')
+        })
+
+        it('Updated imageHash should be usable', async () => {
+          const nextWallet = SequenceWallet.basicWallet(context)
+          const ipfs = randomHex(32)
+
+          await wallet.sendTransactions([{
+            target: wallet.address,
+            data: wallet.mainModule.interface.encodeFunctionData(
+              'updateImageHashAndIPFS',
+              [nextWallet.imageHash, ipfs]
+            )
+          }])
+
+          wallet = wallet.useAddress(wallet.address).useConfig(nextWallet.config).useSigners(nextWallet.signers)
+          await wallet.sendTransactions([{}])
+        })
+      })
     })
   })
 })

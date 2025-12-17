@@ -5,12 +5,15 @@ import '@nomiclabs/hardhat-truffle5'
 import '@nomiclabs/hardhat-ethers'
 import '@nomiclabs/hardhat-web3'
 import '@nomiclabs/hardhat-etherscan'
-import "@tenderly/hardhat-tenderly"
 
 import 'hardhat-gas-reporter'
 import 'solidity-coverage'
 
 import './utils/benchmarker'
+
+import * as tdly from "@tenderly/hardhat-tenderly"
+
+tdly.setup()
 
 const ganacheNetwork = {
   url: 'http://127.0.0.1:8545',
@@ -19,10 +22,10 @@ const ganacheNetwork = {
 
 const config: HardhatUserConfig = {
   solidity: {
-    version: '0.8.18',
+    version: '0.8.17',
     settings: {
       optimizer: {
-        enabled: true,
+        enabled: false,
         runs: 500000
       }
     }
@@ -33,22 +36,10 @@ const config: HardhatUserConfig = {
     rinkeby: networkConfig('rinkeby'),
     kovan: networkConfig('kovan'),
     goerli: networkConfig('goerli'),
-    polygon: networkConfig('polygon'),
-    polygonZkevm: networkConfig('polygon-zkevm'),
+    matic: networkConfig('matic'),
     mumbai: networkConfig('mumbai'),
     arbitrum: networkConfig('arbitrum'),
     arbitrumTestnet: networkConfig('arbitrum-testnet'),
-    arbitrumNova: networkConfig('arbitrum-nova'),
-    optimism: networkConfig('optimism'),
-    bnb: networkConfig('bnb'),
-    bnbTestnet: networkConfig('bnb-testnet'),
-    gnosis: networkConfig('gnosis'),
-    avalanche: networkConfig('avalanche'),
-    avalancheFuji: networkConfig('avalanche-fuji'),
-    // Permissioned chains below
-    oasysHomeverse: networkConfig('oasys-homeverse'),
-    oasysHomeverseTestnet: networkConfig('oasys-homeverse-testnet'),
-    // Local chain
     ganache: ganacheNetwork,
     coverage: {
       url: 'http://localhost:8555'
