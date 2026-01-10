@@ -1,8 +1,6 @@
 on: [push]
 
 name: ci
-permissions:
-  contents: read
 
 jobs:
   install:
