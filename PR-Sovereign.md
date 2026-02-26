@@ -319,7 +319,7 @@ pnpm deploy
 
 Clone the repository, including git submodules.
 
-https://pnpm.io/installation
+This project uses `pnpm`. If you don't have it installed, you can find installation instructions at https://pnpm.io/installation.
 
 Install dependencies with `pnpm install`.
 
