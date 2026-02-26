@@ -5,15 +5,12 @@ import '@nomiclabs/hardhat-truffle5'
 import '@nomiclabs/hardhat-ethers'
 import '@nomiclabs/hardhat-web3'
 import '@nomiclabs/hardhat-etherscan'
+import "@tenderly/hardhat-tenderly"
 
 import 'hardhat-gas-reporter'
 import 'solidity-coverage'
 
 import './utils/benchmarker'
-
-import * as tdly from "@tenderly/hardhat-tenderly"
-
-tdly.setup()
 
 const ganacheNetwork = {
   url: 'http://127.0.0.1:8545',
@@ -22,28 +19,32 @@ const ganacheNetwork = {
 
 const config: HardhatUserConfig = {
   solidity: {
-    version: '0.8.17',
+    version: '0.8.18',
     settings: {
       optimizer: {
-        enabled: false,
-        runs: 500000
+        enabled: true,
+        runs: 500000,
       }
     }
   },
   networks: {
     mainnet: networkConfig('mainnet'),
     ropsten: networkConfig('ropsten'),
-    rinkeby: networkConfig('rinkeby'),
     kovan: networkConfig('kovan'),
     goerli: networkConfig('goerli'),
-    matic: networkConfig('matic'),
+    polygon: networkConfig('polygon'),
+    polygonZkevm: networkConfig('polygon-zkevm'),
     mumbai: networkConfig('mumbai'),
     arbitrum: networkConfig('arbitrum'),
-    arbitrumTestnet: networkConfig('arbitrum-testnet'),
+    arbitrumGoerli: networkConfig('arbitrum-goerli'),
+    arbitrumNova: networkConfig('arbitrum-nova'),
+    optimism: networkConfig('optimism'),
+    bnb: networkConfig('bnb'),
+    bnbTestnet: networkConfig('bnb-testnet'),
+    gnosis: networkConfig('gnosis'),
+    avalanche: networkConfig('avalanche'),
+    avalancheFuji: networkConfig('avalanche-fuji'),
     ganache: ganacheNetwork,
-    coverage: {
-      url: 'http://localhost:8555'
-    },
     hardhat: {
       blockGasLimit: 60000000
     }

@@ -27,12 +27,12 @@ Please refer to the [sequence.js](https://github.com/0xsequence/sequence.js) rep
 If you wish to use the Sequence Wallet Contracts `@0xsequence/wallet-contracts` directly:
 
 1. Install the contracts: `yarn add @0xsequence/wallet-contracts` or `npm install @0xsequence/wallet-contracts`
-2. Install the Sequence Wallet libraries: `yarn add @0xsequence/wallet` or `npm install @0xsequence/wallet`. You can view the source,
-   of the [wallet libraries](https://github.com/0xsequence/sequence.js/tree/master/packages/wallet), and review the
+2. Install the Sequence Wallet libraries: `yarn add @0xsequence/wallet` or `npm install @0xsequence/wallet`. You can view the source of
+   the [wallet libraries](https://github.com/0xsequence/sequence.js/tree/master/packages/wallet) and review the
    [Sequence tests](https://github.com/0xsequence/sequence.js/tree/master/packages/0xsequence) for sample usage.
 
-**NOTE:** this integration is only needed if you want low-level access to the Sequence Wallet contracts, such as if you'd building
-your own custom wallet, or perhaps a CLI tool for managing your wallet.
+**NOTE:** this integration is only needed if you want low-level access to the Sequence Wallet contracts, such as if you're building
+ your own custom wallet, or perhaps a CLI tool for managing your wallet.
 
 ## Security Review
 
