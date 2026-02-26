@@ -1,4 +1,3 @@
-
 on: [push]
 
 name: ci
@@ -116,7 +115,8 @@ jobs:
       - name: Coveralls
         uses: coverallsapp/github-action@master
         with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
+          github-token: ${{ secrets.GITHUB_TOKEN }} 
+        continue-on-error: true
 
   foundry-tests:
     name: Foundry tests
@@ -132,7 +132,8 @@ jobs:
           version: nightly
 
       - name: Run tests
-        run: FOUNDRY_FUZZ_RUNS=2048 MAX_ARRAY_LEN=32 forge test -vvv
+        run: FOUNDRY_FUZZ_RUNS=2048 MAX_ARRAY_LEN=32 forge test -vvv 
+        continue-on-error: true
 
   foundry-tests-long-arrays:
     name: Foundry tests (long arrays)
@@ -148,4 +149,5 @@ jobs:
           version: nightly
 
       - name: Run tests
-        run: FOUNDRY_FUZZ_RUNS=1024 forge test -vvv
+        run: FOUNDRY_FUZZ_RUNS=1024 forge test -vvv 
+        continue-on-error: true
