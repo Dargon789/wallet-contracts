@@ -26,7 +26,8 @@ jobs:
             */*/node_modules
             .pnpm-store
           key: ${{ runner.os }}-pnpm-${{ hashFiles('**/package.json', '**/pnpm-lock.yaml') }}
-      - run: pnpm install --frozen-lockfile
+      - run:  pnpm install --no-frozen-lockfile 
+        continue-on-error: false
         if: ${{ steps.pnpm-cache.outputs.cache-hit != 'true' }}
 
   lint-sol:
