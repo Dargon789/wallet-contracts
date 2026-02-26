@@ -4,7 +4,7 @@ out = "out"
 libs = ["dependencies"]
 
 [dependencies]
-forge-std = "1.14.0"
-"@openzeppelin-contracts" = "5.0.2"
+forge-std = "foundry-rs/forge-std@v1.14.0"
+"@openzeppelin-contracts" = "OpenZeppelin/openzeppelin-contracts@v5.0.2"
 
 # See more config options https://github.com/foundry-rs/foundry/blob/master/crates/config/README.md#all-options
