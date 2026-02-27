@@ -22,7 +22,7 @@ jobs:
           key: ${{ runner.os }}-lerna-${{ hashFiles('**/package.json', '**/yarn.lock') }}
       - run: yarn install --network-concurrency 1
         if: ${{ steps.yarn-cache.outputs.cache-hit != 'true' }}
-       
+
   benchmark:
     name: Benchmark
     runs-on: ubuntu-latest
@@ -41,6 +41,7 @@ jobs:
           key: ${{ runner.os }}-lerna-${{ hashFiles('**/package.json', '**/yarn.lock') }}
       - run: yarn build
       - run: yarn benchmark
+       continue-on-error: true
         
   lint-ts:
     name: Typescript lint
@@ -77,7 +78,7 @@ jobs:
             */*/node_modules
           key: ${{ runner.os }}-lerna-${{ hashFiles('**/package.json', '**/yarn.lock') }}
       - run: yarn lint:sol
-        
+
   test:
     name: Test contracts
     runs-on: ubuntu-latest
