@@ -41,7 +41,7 @@ If you wish to use the Sequence Wallet Contracts `@0xsequence/wallet-contracts` 
 ### V2 Audits
 
 - [Consensys Diligence](https://github.com/0xsequence/wallet-contracts/blob/master/audits/v2/consensys-horizon-sequence-wallet-audit-2023-02.pdf) - February 2023
-- [Zellic](https://github.com/0xsequence/wallet-contracts/raw/master/audits/Quantstamp_Arcadeum_Report_Final.pdf) - March 2023
+- [Zellic](https://github.com/0xsequence/wallet-contracts/blob/master/audits/v2/zellic-sequence-wallet-audit-2023-03.pdf) - March 2023
 
 ### V1 Audits
 
