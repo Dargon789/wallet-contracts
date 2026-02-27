@@ -1,11 +1,14 @@
 // SPDX-License-Identifier: Apache-2.0
-pragma solidity 0.8.17;
+pragma solidity 0.8.18;
 
 
 interface IModuleHooks {
   // Errors
   error HookAlreadyExists(bytes4 _signature);
   error HookDoesNotExist(bytes4 _signature);
+
+  // Events
+  event DefinedHook(bytes4 _signature, address _implementation);
 
   /**
    * @notice Reads the implementation hook of a signature

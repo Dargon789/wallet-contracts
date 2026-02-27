@@ -12,7 +12,7 @@ let d_idle: number
 let d_signing: number
 let d_disableTrim: boolean
 
-let topologyConvertor: any
+let topologyConverter: any
 
 let prevsnapshot: any
 
@@ -46,7 +46,7 @@ const worker = {
     d_disableTrim = disableTrim
 
     if (topology !== 'legacy' && topology !== 'merkle') throw new Error('Invalid topology')
-    topologyConvertor = topology === 'legacy' ? legacyTopology : merkleTopology
+    topologyConverter = topology === 'legacy' ? legacyTopology : merkleTopology
   },
   async run() {
     const results: ethers.BigNumberish[] = []
@@ -55,8 +55,8 @@ const worker = {
     for (let i = 0; i < d_runs; i++) {
       wallet = SequenceWallet.basicWallet(context, {
         signing: d_signing,
-        iddle: d_idle,
-        topologyConvertor,
+        idle: d_idle,
+        topologyConverter,
         encodingOptions: { disableTrim: d_disableTrim }
       })
       await wallet.deploy()

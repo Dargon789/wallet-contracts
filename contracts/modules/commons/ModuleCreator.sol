@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: Apache-2.0
-pragma solidity 0.8.17;
+pragma solidity 0.8.18;
 
 import "./interfaces/IModuleCreator.sol";
 
@@ -17,6 +17,7 @@ contract ModuleCreator is IModuleCreator, ModuleERC165, ModuleSelfAuth {
    */
   function createContract(bytes memory _code) public override virtual payable onlySelf returns (address addr) {
     assembly { addr := create(callvalue(), add(_code, 32), mload(_code)) }
+    if (addr == address(0)) revert CreateFailed(_code);
     emit CreatedContract(addr);
   }
 

@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: Apache-2.0
-pragma solidity 0.8.17;
+pragma solidity 0.8.18;
 
 import "contracts/utils/SignatureValidator.sol";
 
@@ -154,7 +154,7 @@ contract SignatureValidatorTest is AdvTest {
   }
 
   function test_isValidSignature_Fail_EmptySignature(bytes32 _hash, address _signer) external {
-    vm.expectRevert(stdError.arithmeticError);
+    vm.expectRevert(abi.encodeWithSignature('EmptySignature()'));
     lib.isValidSignature(_hash, _signer, bytes(''));
   }
 

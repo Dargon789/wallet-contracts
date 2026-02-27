@@ -1,31 +1,21 @@
 // SPDX-License-Identifier: Apache-2.0
-pragma solidity 0.8.17;
-pragma experimental ABIEncoderV2;
+pragma solidity 0.8.18;
 
-import "../utils/SignatureValidator.sol";
 import "../utils/LibOptim.sol";
 
 import "./commons/submodules/auth/SequenceBaseSig.sol";
 
-import "./commons/Implementation.sol";
 import "./commons/ModuleAuth.sol";
-import "./commons/ModuleHooks.sol";
 import "./commons/ModuleCalls.sol";
-import "./commons/ModuleUpdate.sol";
 import "./commons/ModuleCreator.sol";
-
-import "../interfaces/receivers/IERC1155Receiver.sol";
-import "../interfaces/receivers/IERC721Receiver.sol";
-
-import "../interfaces/IERC1271Wallet.sol";
 
 
 /**
- * GuestModule implements an Arcadeum wallet without signatures, nonce or replay protection.
+ * GuestModule implements a Sequence wallet without signatures, nonce or replay protection.
  * executing transactions using this wallet is not an authenticated process, and can be done by any address.
  *
  * @notice This contract is completely public with no security, designed to execute pre-signed transactions
- *   and use Arcadeum tools without using the wallets.
+ *   and use Sequence tools without using the wallets.
  */
 contract GuestModule is
   ModuleAuth,
@@ -45,7 +35,7 @@ contract GuestModule is
     bytes calldata
   ) public override {
     // Hash transaction bundle
-    bytes32 txHash = SequenceBaseSig.subDigest(keccak256(abi.encode('guest:', _txs)));
+    bytes32 txHash = SequenceBaseSig.subdigest(keccak256(abi.encode('guest:', _txs)));
 
     // Execute the transactions
     _executeGuest(txHash, _txs);
@@ -59,7 +49,7 @@ contract GuestModule is
     Transaction[] calldata _txs
   ) public override {
     // Hash transaction bundle
-    bytes32 txHash = SequenceBaseSig.subDigest(keccak256(abi.encode('self:', _txs)));
+    bytes32 txHash = SequenceBaseSig.subdigest(keccak256(abi.encode('self:', _txs)));
 
     // Execute the transactions
     _executeGuest(txHash, _txs);
@@ -92,9 +82,14 @@ contract GuestModule is
       );
 
       if (success) {
-        emit TxExecuted(_txHash);
+        emit TxExecuted(_txHash, i);
       } else {
-        _revertBytes(transaction.revertOnError, _txHash, LibOptim.returnData());
+        _revertBytes(
+          transaction.revertOnError,
+          _txHash,
+          i,
+          LibOptim.returnData()
+        );
       }
     }
   }

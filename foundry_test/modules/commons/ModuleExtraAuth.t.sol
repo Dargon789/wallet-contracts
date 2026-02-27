@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: Apache-2.0
-pragma solidity 0.8.17;
+pragma solidity 0.8.18;
 
 import "contracts/modules/commons/ModuleExtraAuth.sol";
 
@@ -157,7 +157,7 @@ contract ModuleExtraAuthTest is AdvTest {
     bytes32 _imageHash,
     uint256 _expiration
   ) external {
-    _caller = boundDiff(_caller, address(imp));
+    boundDiff(_caller, address(imp));
     vm.expectRevert(abi.encodeWithSignature('OnlySelfAuth(address,address)', _caller, address(imp)));
     vm.prank(_caller);
     imp.setExtraImageHash(_imageHash, _expiration);
@@ -167,7 +167,7 @@ contract ModuleExtraAuthTest is AdvTest {
     address _caller,
     bytes32[] calldata _clear
   ) external {
-    _caller = boundDiff(_caller, address(imp));
+    boundDiff(_caller, address(imp));
     vm.expectRevert(abi.encodeWithSignature('OnlySelfAuth(address,address)', _caller, address(imp)));
     vm.prank(_caller);
     imp.clearExtraImageHashes(_clear);
