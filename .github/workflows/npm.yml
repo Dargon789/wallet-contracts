@@ -144,10 +144,70 @@ jobs:
 
           echo "Validating artifacts in: $ARTIFACT_DIR"
 
+          if [[ -z "${ARTIFACT_DIR:-}" ]]; then
+            echo "ERROR: ARTIFACT_DIR is not set" >&2
+            exit 1
+          fi
+
           if [[ ! -d "$ARTIFACT_DIR" ]]; then
             echo "ERROR: Artifact directory does not exist: $ARTIFACT_DIR" >&2
             exit 1
           fi
+
+          ARTIFACT_ROOT="$(realpath "$ARTIFACT_DIR")"
+          echo "Resolved artifact root: $ARTIFACT_ROOT"
+
+          # Ensure there are no symlinks anywhere under the artifact root
+          if find "$ARTIFACT_ROOT" -type l | grep -q .; then
+            echo "ERROR: Symlinks detected inside artifact directory; refusing to continue." >&2
+            find "$ARTIFACT_ROOT" -type l -print >&2 || true
+            exit 1
+          fi
+
+          # Validate top-level entries: must be directories with safe names matching TOOL-PLATFORM-ARCH pattern
+          shopt -s nullglob
+          entries=("$ARTIFACT_ROOT"/*)
+          shopt -u nullglob
+
+          if [[ ${#entries[@]} -eq 0 ]]; then
+            echo "ERROR: No artifacts found under $ARTIFACT_ROOT" >&2
+            exit 1
+          fi
+
+          for entry in "${entries[@]}"; do
+            name="$(basename "$entry")"
+
+            # Only allow alphanumerics, dashes, and underscores in directory names
+            if [[ "$name" =~ [^A-Za-z0-9_-] ]]; then
+              echo "ERROR: Artifact entry has invalid characters in name: $name" >&2
+              exit 1
+            fi
+
+            # Expect names of the form TOOL-PLATFORM-ARCH
+            if [[ ! "$name" =~ ^[A-Za-z0-9_-]+-[A-Za-z0-9_-]+-[A-Za-z0-9_-]+$ ]]; then
+              echo "ERROR: Unexpected artifact entry name (expected TOOL-PLATFORM-ARCH): $name" >&2
+              exit 1
+            fi
+
+            if [[ ! -d "$entry" ]]; then
+              echo "ERROR: Top-level artifact entry is not a directory: $entry" >&2
+              exit 1
+            fi
+
+            # Ensure each entry resolves inside the artifact root
+            resolved="$(realpath "$entry")"
+            case "$resolved" in
+              "$ARTIFACT_ROOT"/*) ;;
+              *)
+                echo "ERROR: Artifact entry resolves outside artifact root:" >&2
+                echo "  entry=$entry" >&2
+                echo "  resolved=$resolved" >&2
+                exit 1
+                ;;
+            esac
+          done
+
+          echo "Artifact validation completed successfully."
 
           if ! find "$ARTIFACT_DIR" -mindepth 1 -print -quit | grep -q .; then
             echo "ERROR: Artifact directory is empty: $ARTIFACT_DIR" >&2
