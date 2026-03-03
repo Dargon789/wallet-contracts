@@ -1,0 +1,62 @@
+# Compiler files
+cache/
+out/
+
+# Ignore all broadcast logs
+/broadcast
+
+# Dotenv file
+.env
+.env.*
+!.env.sample
+
+# Node modules
+node_modules/
+
+# Coverage
+coverage/
+coverage.json
+
+# Hardhat files
+artifacts/
+typechain/
+typechain-types/
+
+# Foundry
+forge-cache/
+forge-artifacts/
+
+# System files
+.DS_Store
+*.swp
+*.swo
+
+# IDE files
+.vscode/
+.idea/
+*.iml
+.history/
+
+# Debug files
+*.log
+debug/
+
+# Local deployments
+deployments/localhost/
+
+# Temporary files
+*~
+*.bak
+*.tmp
+
+# Gas reports
+gas-report.txt
+
+# Misc
+.notes/
+.todo/
+flat
+
+# Coverage
+lcov.info
+/report
