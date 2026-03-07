@@ -17,7 +17,7 @@ jobs:
           node-version: 18
       - uses: pnpm/action-setup@v2
         with:
-          version: 10
+          version: 9
       - uses: actions/cache@master
         id: pnpm-cache
         with:
@@ -42,7 +42,7 @@ jobs:
           node-version: 18
       - uses: pnpm/action-setup@v2
         with:
-          version: 10
+          version: 9
       - uses: actions/cache@master
         id: pnpm-cache
         with:
@@ -73,7 +73,7 @@ jobs:
           node-version: 18
       - uses: pnpm/action-setup@v2
         with:
-          version: 10
+          version: 9
       - uses: actions/cache@master
         id: pnpm-cache
         with:
@@ -104,7 +104,7 @@ jobs:
   #         node-version: 18
   #     - uses: pnpm/action-setup@v2
   #       with:
-  #         version: 10
+  #         version: 9
   #     - uses: actions/cache@master
   #       id: pnpm-cache
   #       with:
