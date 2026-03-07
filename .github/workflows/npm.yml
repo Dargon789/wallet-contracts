@@ -149,11 +149,6 @@ jobs:
             exit 1
           fi
 
-          if [[ ! -d "$ARTIFACT_DIR" ]]; then
-            echo "ERROR: ARTIFACT_DIR does not exist or is not a directory: $ARTIFACT_DIR" >&2
-            exit 1
-          fi
-
           echo "Listing contents of artifact directory:"
           find "$ARTIFACT_DIR" -maxdepth 3 -mindepth 1 -print
 
