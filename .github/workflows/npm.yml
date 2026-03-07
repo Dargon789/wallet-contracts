@@ -431,6 +431,19 @@ jobs:
             fi
           fi
 
+          # Final safety check before publishing: ensure PACKAGE_DIR is still within the expected root
+          ABS_PACKAGE_DIR="$(realpath "$PACKAGE_DIR")"
+          ABS_EXPECTED_ROOT="$(realpath "./@foundry-rs")"
+          case "$ABS_PACKAGE_DIR" in
+            "$ABS_EXPECTED_ROOT"/*) ;;
+            *)
+              echo "ERROR: PACKAGE_DIR escaped expected root before publish:" >&2
+              echo "  ABS_PACKAGE_DIR=$ABS_PACKAGE_DIR" >&2
+              echo "  ABS_EXPECTED_ROOT=$ABS_EXPECTED_ROOT" >&2
+              exit 1
+              ;;
+          esac
+
           bun ./scripts/publish.mjs "$PACKAGE_DIR"
 
           echo "Published @foundry-rs/${TOOL}-${PLATFORM}-${ARCH}"
