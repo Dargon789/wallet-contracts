@@ -150,6 +150,38 @@ jobs:
           fi
 
           if [[ ! -d "$ARTIFACT_DIR" ]]; then
+            echo "ERROR: ARTIFACT_DIR does not exist or is not a directory: $ARTIFACT_DIR" >&2
+            exit 1
+          fi
+
+          echo "Listing contents of artifact directory:"
+          find "$ARTIFACT_DIR" -maxdepth 3 -mindepth 1 -print
+
+          # Reject any symlinks in the artifact directory to avoid path traversal or unexpected indirection
+          if find "$ARTIFACT_DIR" -maxdepth 10 -type l | grep -q .; then
+            echo "ERROR: Symlinks are not allowed in artifacts" >&2
+            find "$ARTIFACT_DIR" -maxdepth 10 -type l -ls >&2 || true
+            exit 1
+          fi
+
+          # Ensure that all files have an expected extension and no suspicious names
+          # Adjust the allowed patterns if the artifact format changes.
+          while IFS= read -r -d '' file; do
+            rel_path="${file#"$ARTIFACT_DIR"/}"
+            case "$rel_path" in
+              *.tar|*.tar.gz|*.tgz|*.zip|*.json|*.txt)
+                # allowed file types
+                ;;
+              *)
+                echo "ERROR: Unexpected file in artifacts: $rel_path" >&2
+                exit 1
+                ;;
+            esac
+          done < <(find "$ARTIFACT_DIR" -maxdepth 10 -type f -print0)
+
+          echo "Artifact validation completed successfully."
+
+          if [[ ! -d "$ARTIFACT_DIR" ]]; then
             echo "ERROR: Artifact directory does not exist: $ARTIFACT_DIR" >&2
             exit 1
           fi
