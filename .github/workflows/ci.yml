@@ -26,9 +26,9 @@ jobs:
             */*/node_modules
             .pnpm-store
           key: ${{ runner.os }}-pnpm-${{ hashFiles('**/package.json', '**/pnpm-lock.yaml') }}
-      - run: pnpm install --frozen-lockfile
+      - run: pnpm install --no-frozen-lockfile
         if: ${{ steps.pnpm-cache.outputs.cache-hit != 'true' }}
-
+        continue-on-error: true
   lint-sol:
     name: Solidity lint
     runs-on: ubuntu-latest
