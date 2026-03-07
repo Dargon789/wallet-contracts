@@ -396,6 +396,19 @@ jobs:
             exit 1
           fi
 
+          # Ensure artifact directory is not empty
+          if ! find "$EXPECTED_ARTIFACT_PATH" -mindepth 1 -print -quit | grep -q .; then
+            echo "ERROR: Artifact directory is empty: $EXPECTED_ARTIFACT_PATH" >&2
+            exit 1
+          fi
+
+          # Reject symlinks and special files inside the artifact directory
+          if find "$EXPECTED_ARTIFACT_PATH" -xtype l -o ! -type f ! -type d | grep -q .; then
+            echo "ERROR: Artifact directory contains symlinks or unsupported file types; refusing to use it:" >&2
+            find "$EXPECTED_ARTIFACT_PATH" -maxdepth 5 -xtype l -o ! -type f ! -type d >&2 || true
+            exit 1
+          fi
+
           # Resolve artifact path to an absolute path and ensure it stays within ARTIFACT_DIR
           ABS_ARTIFACT_PATH="$(realpath "$EXPECTED_ARTIFACT_PATH")"
           ABS_ARTIFACT_ROOT="$(realpath "$ARTIFACT_DIR")"
