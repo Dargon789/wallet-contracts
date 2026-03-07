@@ -59,7 +59,7 @@
     "eslint-plugin-prettier": "^3.3.1",
     "ethereum-waffle": "^3.4.4",
     "ganache-cli": "6.12.2",
-    "hardhat": "^3.1.11",
+    "hardhat": "^2.16.1",
     "hardhat-gas-reporter": "1.0.4",
     "husky": "^4.2.3",
     "ora": "^5.4.1",
@@ -86,22 +86,5 @@
     "@typechain/ethers-v5": "^7.0.1",
     "ethers": "^5.7.2",
     "keccak256": "^1.0.6"
-  },
-  "type": "module",
-  "description": "Ethereum contracts for the Sequence Smart Wallet at [https://sequence.app](https://sequence.app).",
-  "main": ".eslintrc.js",
-  "directories": {
-    "lib": "lib",
-    "test": "test"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/Dargon789/wallet-contracts.git"
-  },
-  "keywords": [],
-  "author": "",
-  "bugs": {
-    "url": "https://github.com/Dargon789/wallet-contracts/issues"
-  },
-  "homepage": "https://github.com/Dargon789/wallet-contracts#readme"
+  }
 }
