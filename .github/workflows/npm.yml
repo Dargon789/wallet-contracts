@@ -187,7 +187,7 @@ jobs:
           
       # Run automatically after a successful 'release' workflow, or manually if a run_id is provided
       - name: Publish ${{ matrix.os }}-${{ matrix.arch }} Binary
-        ARTIFACT_DIR: ${{ steps.paths.outputs.artifact_dir }}
+          ARTIFACT_DIR: ${{ steps.paths.outputs.artifact_dir }}
         env:
           PROVENANCE: true
           VERSION_NAME: ${{ steps.release-version.outputs.RELEASE_VERSION }}
