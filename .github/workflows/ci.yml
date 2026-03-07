@@ -17,7 +17,7 @@ jobs:
           node-version: 18
       - uses: pnpm/action-setup@v2
         with:
-          version: 10
+          version: 9
       - uses: actions/cache@master
         id: pnpm-cache
         with:
@@ -28,7 +28,7 @@ jobs:
           key: ${{ runner.os }}-pnpm-${{ hashFiles('**/package.json', '**/pnpm-lock.yaml') }}
       - run: pnpm install --no-frozen-lockfile
         if: ${{ steps.pnpm-cache.outputs.cache-hit != 'true' }}
-        continue-on-error: true
+         
   lint-sol:
     name: Solidity lint
     runs-on: ubuntu-latest
@@ -42,7 +42,7 @@ jobs:
           node-version: 18
       - uses: pnpm/action-setup@v2
         with:
-          version: 10
+          version: 9
       - uses: actions/cache@master
         id: pnpm-cache
         with:
@@ -73,7 +73,7 @@ jobs:
           node-version: 18
       - uses: pnpm/action-setup@v2
         with:
-          version: 10
+          version: 9
       - uses: actions/cache@master
         id: pnpm-cache
         with:
@@ -90,7 +90,7 @@ jobs:
 
       - name: Run tests
         run: FOUNDRY_FUZZ_RUNS=1024 forge test -vvv
-
+ 
   # coverage:
   #   name: Coverage
   #   runs-on: ubuntu-latest
@@ -104,7 +104,7 @@ jobs:
   #         node-version: 18
   #     - uses: pnpm/action-setup@v2
   #       with:
-  #         version: 10
+  #         version: 9
   #     - uses: actions/cache@master
   #       id: pnpm-cache
   #       with:
@@ -118,3 +118,4 @@ jobs:
   #       uses: coverallsapp/github-action@master
   #       with:
   #         github-token: ${{ secrets.GITHUB_TOKEN }}
+  #  continue-on-error: true
