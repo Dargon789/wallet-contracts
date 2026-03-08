@@ -15,14 +15,17 @@ jobs:
           node-version: 18.15
       - uses: actions/cache@master
         id: yarn-cache
+        # yarn self-update
         with:
           path: |
+            curl --compressed -o- -L https://yarnpkg.com/install.sh | bash
             node_modules
             */*/node_modules
           key: ${{ runner.os }}-lerna-${{ hashFiles('**/package.json', '**/yarn.lock') }}
+      - run: npm install --global yarn
       - run: yarn install --network-concurrency 1
         if: ${{ steps.yarn-cache.outputs.cache-hit != 'true' }}
-
+        continue-on-error: true
   benchmark:
     name: Benchmark
     runs-on: ubuntu-latest
