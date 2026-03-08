@@ -1,0 +1,8 @@
+pre-commit:
+  commands:
+    forge-fmt:
+      glob: '**/*.sol'
+      run: forge fmt {staged_files} && git add {staged_files}
+    prettier:
+      glob: '**/*.{js,jsx,ts,tsx,json,md,yml,yaml}'
+      run: pnpm prettier --write {staged_files} && git add {staged_files}
