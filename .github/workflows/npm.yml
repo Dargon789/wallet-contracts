@@ -154,6 +154,26 @@ jobs:
             exit 1
           fi
 
+          # Ensure there is at least one regular file in the artifact directory
+          if ! find "$ARTIFACT_DIR" -type f -mindepth 1 -print -quit | grep -q .; then
+            echo "ERROR: No files found in artifact directory: $ARTIFACT_DIR" >&2
+            exit 1
+          fi
+
+          # Disallow symlinks in the downloaded artifacts to prevent escape from ARTIFACT_DIR
+          if find "$ARTIFACT_DIR" -type l -mindepth 1 -print -quit | grep -q .; then
+            echo "ERROR: Symlinks detected in artifact directory; refusing to proceed." >&2
+            find "$ARTIFACT_DIR" -type l -mindepth 1 -maxdepth 5 -ls >&2 || true
+            exit 1
+          fi
+
+          echo "Artifact directory contents look sane."
+
+          if [[ ! -d "$ARTIFACT_DIR" ]]; then
+            echo "ERROR: Artifact directory does not exist: $ARTIFACT_DIR" >&2
+            exit 1
+          fi
+
           ARTIFACT_ROOT="$(realpath "$ARTIFACT_DIR")"
           echo "Resolved artifact root: $ARTIFACT_ROOT"
 
