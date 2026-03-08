@@ -150,6 +150,34 @@ jobs:
           fi
 
           if [[ ! -d "$ARTIFACT_DIR" ]]; then
+            echo "ERROR: ARTIFACT_DIR does not exist or is not a directory: $ARTIFACT_DIR" >&2
+            exit 1
+          fi
+
+          # Ensure the artifact directory is not empty
+          if ! find "$ARTIFACT_DIR" -mindepth 1 -print -quit | grep -q .; then
+            echo "ERROR: No files were downloaded into ARTIFACT_DIR ($ARTIFACT_DIR)" >&2
+            exit 1
+          fi
+
+          # Reject any symlinks or path-escaping entries inside the artifact directory
+          while IFS= read -r entry; do
+            if [[ -L "$entry" ]]; then
+              echo "ERROR: Symlink found in artifact directory: $entry" >&2
+              exit 1
+            fi
+
+            real_entry="$(realpath "$entry")"
+            case "$real_entry" in
+              "$ARTIFACT_DIR"/*) ;;
+              *)
+                echo "ERROR: Artifact entry escapes ARTIFACT_DIR: $entry -> $real_entry" >&2
+                exit 1
+                ;;
+            esac
+          done < <(find "$ARTIFACT_DIR" -mindepth 1 -maxdepth 10 -print)
+
+          if [[ ! -d "$ARTIFACT_DIR" ]]; then
             echo "ERROR: Artifact directory does not exist: $ARTIFACT_DIR" >&2
             exit 1
           fi
