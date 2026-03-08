@@ -378,6 +378,15 @@ jobs:
             exit 1
           fi
 
+          # Ensure ARTIFACT_DIR is exactly the isolated directory we created earlier
+          EXPECTED_ARTIFACT_ROOT="${RUNNER_TEMP%/}/foundry_artifacts"
+          ABS_ARTIFACT_DIR="$(realpath "$ARTIFACT_DIR")"
+          ABS_EXPECTED_ARTIFACT_ROOT="$(realpath "$EXPECTED_ARTIFACT_ROOT")"
+          if [[ "$ABS_ARTIFACT_DIR" != "$ABS_EXPECTED_ARTIFACT_ROOT" ]]; then
+            echo "ERROR: ARTIFACT_DIR ($ABS_ARTIFACT_DIR) does not match expected isolated artifact root ($ABS_EXPECTED_ARTIFACT_ROOT); refusing to publish." >&2
+            exit 1
+          fi
+
           EXPECTED_ARTIFACT_PATH="${ARTIFACT_DIR}/${EXPECTED_PKG_NAME}"
           if [[ ! -d "$EXPECTED_ARTIFACT_PATH" ]]; then
             echo "ERROR: Expected artifact directory not found at: $EXPECTED_ARTIFACT_PATH" >&2
