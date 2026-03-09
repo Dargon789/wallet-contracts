@@ -1,0 +1,1 @@
+C:/Users/Legion/projects/wallet-contracts/packages/core/src/exports/chains.ts
