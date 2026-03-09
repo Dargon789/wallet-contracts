@@ -4,7 +4,7 @@
     <option name="autoReloadType" value="NONE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="6928f018-34c2-4fe3-b2a9-540996fdbfb5" name="Changes" comment="" />
+    <list default="true" id="9baafcda-9252-411c-9771-d79555b1d032" name="Changes" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -59,17 +59,17 @@
     &quot;assignee&quot;: &quot;Dargon789&quot;
   }
 }</component>
-  <component name="GitHubPullRequestState"><![CDATA[{
-  "prStates": [
+  <component name="GitHubPullRequestState">{
+  &quot;prStates&quot;: [
     {
-      "id": {
-        "id": "PR_kwDOQaDCYs7Iz3Du",
-        "number": 87
+      &quot;id&quot;: {
+        &quot;id&quot;: &quot;PR_kwDOQaDCYs7Iz3Du&quot;,
+        &quot;number&quot;: 87
       },
-      "lastSeen": 1772971457867
+      &quot;lastSeen&quot;: 1772971457867
     }
   ]
-}]]></component>
+}</component>
   <component name="GithubPullRequestsUISettings">{
   &quot;selectedUrlAndAccountId&quot;: {
     &quot;url&quot;: &quot;https://github.com/Dargon789/wallet-contracts.git&quot;,
@@ -106,7 +106,6 @@
     "cf.first.check.clang-format": "false",
     "cidr.known.project.marker": "true",
     "dart.analysis.tool.window.visible": "false",
-    "git-widget-placeholder": "#87 on 0x",
     "kotlin-language-version-configured": "true",
     "last_opened_file_path": "C:/Users/Legion/projects/wallet-contracts",
     "run.code.analysis.last.selected.profile": "pProject Default",
