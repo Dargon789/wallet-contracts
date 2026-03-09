@@ -1,1 +1,0 @@
-C:/Users/Legion/projects/wallet-contracts/packages/react/src/exports/connectors.ts

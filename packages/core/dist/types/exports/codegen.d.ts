@@ -1,1 +1,0 @@
-C:/Users/Legion/projects/wallet-contracts/packages/core/src/exports/codegen.ts
