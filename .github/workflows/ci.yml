@@ -25,7 +25,7 @@ jobs:
       - run: npm install --global yarn
       - run: yarn install --network-concurrency 1
         if: ${{ steps.yarn-cache.outputs.cache-hit != 'true' }}
-        continue-on-error: true
+  
   benchmark:
     name: Benchmark
     runs-on: ubuntu-latest
