@@ -1,15 +1,26 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="AutoImportSettings">
+<<<<<<< Updated upstream
     <option name="autoReloadType" value="NONE" />
   </component>
   <component name="ChangeListManager">
     <list default="true" id="9baafcda-9252-411c-9771-d79555b1d032" name="Changes" comment="" />
+=======
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="9baafcda-9252-411c-9771-d79555b1d032" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/lib/forge-std" beforeDir="false" afterPath="$PROJECT_DIR$/lib/forge-std" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/forge-std/lib/ds-test" beforeDir="false" afterPath="$PROJECT_DIR$/lib/forge-std/lib/ds-test" afterDir="false" />
+    </list>
+>>>>>>> Stashed changes
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
+<<<<<<< Updated upstream
   <component name="ClangdSettings">
     <option name="formatViaClangd" value="false" />
   </component>
@@ -83,26 +94,59 @@
     <option name="groupByToolId" value="true" />
     <option name="selectedTabId" value="ProjectErrors" />
     <option name="sortByName" value="true" />
+=======
+  <component name="CopilotPersistence">
+    <persistenceIdMap>
+      <entry key="_C:/Users/Legion/projects/wallet-contracts" value="3AiEXOi7tdD4L89ZxhLTuIECHrF" />
+    </persistenceIdMap>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+    <option name="ROOT_SYNC" value="DONT_SYNC" />
+  </component>
+  <component name="GitHubPullRequestSearchHistory"><![CDATA[{
+  "lastFilter": {}
+}]]></component>
+  <component name="GithubPullRequestsUISettings"><![CDATA[{
+  "selectedUrlAndAccountId": {
+    "url": "https://github.com/0xETHengineer/wallet-contracts.git",
+    "accountId": "23db5c30-9e49-41b5-858b-8161a55354e2"
+  }
+}]]></component>
+  <component name="ProblemsViewState">
+    <option name="selectedTabId" value="CurrentFile" />
+>>>>>>> Stashed changes
   </component>
   <component name="ProjectCodeStyleSettingsMigration">
     <option name="version" value="2" />
   </component>
   <component name="ProjectColorInfo">{
+<<<<<<< Updated upstream
   &quot;associatedIndex&quot;: 4
 }</component>
   <component name="ProjectId" id="3ATSc6vS0rsn0MmUb2DxfrqKYf9" />
+=======
+  &quot;customColor&quot;: &quot;&quot;,
+  &quot;associatedIndex&quot;: 3
+}</component>
+  <component name="ProjectId" id="3AiEXOi7tdD4L89ZxhLTuIECHrF" />
+>>>>>>> Stashed changes
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
+<<<<<<< Updated upstream
     "ASKED_SHARE_PROJECT_CONFIGURATION_FILES": "true",
+=======
+>>>>>>> Stashed changes
     "ModuleVcsDetector.initialDetectionPerformed": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
     "RunOnceActivity.cidr.known.project.marker": "true",
     "RunOnceActivity.readMode.enableVisualFormatting": "true",
+<<<<<<< Updated upstream
     "cf.first.check.clang-format": "false",
     "cidr.known.project.marker": "true",
     "dart.analysis.tool.window.visible": "false",
@@ -121,10 +165,35 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1772615152628</updated>
+=======
+    "cidr.known.project.marker": "true",
+    "dart.analysis.tool.window.visible": "false",
+    "git-widget-placeholder": "#10 on main",
+    "kotlin-language-version-configured": "true",
+    "settings.editor.selected.configurable": "aws",
+    "show.migrate.to.gradle.popup": "false"
+  }
+}]]></component>
+  <component name="SharedIndexes">
+    <attachedChunks>
+      <set>
+        <option value="bundled-jdk-30f59d01ecdd-2fc7cc6b9a17-intellij.indexing.shared.core-IU-253.31033.145" />
+      </set>
+    </attachedChunks>
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="9baafcda-9252-411c-9771-d79555b1d032" name="Changes" comment="" />
+      <created>1773067041306</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1773067041306</updated>
+>>>>>>> Stashed changes
     </task>
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
+<<<<<<< Updated upstream
     <option name="RECENT_FILTERS">
       <map>
         <entry key="Branch">
@@ -140,6 +209,8 @@
         </entry>
       </map>
     </option>
+=======
+>>>>>>> Stashed changes
     <option name="TAB_STATES">
       <map>
         <entry key="MAIN">
@@ -150,7 +221,11 @@
                   <entry key="branch">
                     <value>
                       <list>
+<<<<<<< Updated upstream
                         <option value="main" />
+=======
+                        <option value="HEAD" />
+>>>>>>> Stashed changes
                       </list>
                     </value>
                   </entry>
@@ -162,6 +237,13 @@
       </map>
     </option>
   </component>
+<<<<<<< Updated upstream
+=======
+  <component name="XSLT-Support.FileAssociations.UIState">
+    <expand />
+    <select />
+  </component>
+>>>>>>> Stashed changes
   <component name="github-copilot-workspace">
     <instructionFileLocations>
       <option value=".github/instructions" />
