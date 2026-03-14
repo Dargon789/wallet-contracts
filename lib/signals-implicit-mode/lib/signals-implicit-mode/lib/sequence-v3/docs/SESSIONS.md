@@ -199,7 +199,7 @@ When an implicit session call is made, both the session signer and the target ad
 > For implicit sessions, the blacklist is mandatory. The blacklist addresses must be sorted or validation will fail. This is to allow a binary search during validation.
 
 > [!WARNING]
-> The blacklist doesn't not prevent explicit sessions from calling blacklisted addresses or prevent explicit signers. To block an explicit session or it's permissions, update the wallet configuration to remove the explicit session.
+> The blacklist does not prevent explicit sessions from calling blacklisted addresses or prevent explicit signers. To block an explicit session or it's permissions, update the wallet configuration to remove the explicit session.
 
 #### Identity Signer (FLAG 0x04)
 
