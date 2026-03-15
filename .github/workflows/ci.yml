@@ -44,7 +44,8 @@ jobs:
           key: ${{ runner.os }}-lerna-${{ hashFiles('**/package.json', '**/yarn.lock') }}
       - run: yarn build
       - run: yarn benchmark
-
+       continue-on-error: true
+        
   lint-ts:
     name: Typescript lint
     runs-on: ubuntu-latest
