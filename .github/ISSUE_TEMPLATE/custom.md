@@ -1,12 +1,12 @@
 ---
 name: Custom issue template
-about: For issues that don't fit other categories.
+about: Use this for issues that don't fit other templates.
 title: ''
 labels: ''
 assignees: ''
 
 ---
 
-**Describe the issue**
+**Describe your issue**
 
-A clear and concise description of the issue.
+Please provide a clear and concise description of the issue.

@@ -277,7 +277,7 @@ ecrecover( keccak256("\x19Ethereum Signed Message:\n32" + _opHash), v, r, s )
 
 ---
 
-### 5.9 **Signature Any Address Subdigest** (`flag = 8`)
+### 5.9 **Signature Any Address Subgiest** (`flag = 8`)
 
 - The code reads a 32-byte "hardcoded subdigest." If it matches `_payload.hashFor(address(0))`, sets `weight = type(uint256).max`.
 - Merges `_leafForAnyAddressSubdigest(anyAddressOpHash)`.
