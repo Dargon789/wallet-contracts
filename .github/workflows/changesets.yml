@@ -1,8 +1,9 @@
 name: Changesets
 on:
   push:
-    branches: [main]
-
+    branches: 
+        - master
+        - main
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
