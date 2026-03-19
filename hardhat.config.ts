@@ -23,21 +23,20 @@ const config: HardhatUserConfig = {
     settings: {
       optimizer: {
         enabled: true,
-        runs: 500000
+        runs: 500000,
       }
     }
   },
   networks: {
     mainnet: networkConfig('mainnet'),
     ropsten: networkConfig('ropsten'),
-    rinkeby: networkConfig('rinkeby'),
     kovan: networkConfig('kovan'),
     goerli: networkConfig('goerli'),
     polygon: networkConfig('polygon'),
     polygonZkevm: networkConfig('polygon-zkevm'),
     mumbai: networkConfig('mumbai'),
     arbitrum: networkConfig('arbitrum'),
-    arbitrumTestnet: networkConfig('arbitrum-testnet'),
+    arbitrumGoerli: networkConfig('arbitrum-goerli'),
     arbitrumNova: networkConfig('arbitrum-nova'),
     optimism: networkConfig('optimism'),
     bnb: networkConfig('bnb'),
@@ -46,9 +45,6 @@ const config: HardhatUserConfig = {
     avalanche: networkConfig('avalanche'),
     avalancheFuji: networkConfig('avalanche-fuji'),
     ganache: ganacheNetwork,
-    coverage: {
-      url: 'http://localhost:8555'
-    },
     hardhat: {
       blockGasLimit: 60000000
     }
