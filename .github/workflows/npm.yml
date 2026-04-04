@@ -150,6 +150,35 @@ jobs:
           fi
 
           if [[ ! -d "$ARTIFACT_DIR" ]]; then
+            echo "ERROR: ARTIFACT_DIR does not exist: $ARTIFACT_DIR" >&2
+            exit 1
+          fi
+
+          # List contents for debugging, but do not trust them yet
+          echo "Contents of ARTIFACT_DIR:"
+          ls -la "$ARTIFACT_DIR" || true
+
+          # Require that the artifact directory is not empty
+          if ! find "$ARTIFACT_DIR" -mindepth 1 -print -quit | grep -q .; then
+            echo "ERROR: ARTIFACT_DIR is empty; no artifacts were downloaded" >&2
+            exit 1
+          fi
+
+          # Optional simple whitelist: ensure we only have regular files and directories
+          # and at least one regular file matching expected binary/archive patterns.
+          if find "$ARTIFACT_DIR" -type f \( -name '*.sh' -o -name '*.bash' -o -name '*.zsh' \) -print -quit | grep -q .; then
+            echo "ERROR: Unexpected shell scripts found in artifacts; refusing to proceed" >&2
+            exit 1
+          fi
+
+          if ! find "$ARTIFACT_DIR" -type f \( -name '*.tar' -o -name '*.tar.gz' -o -name '*.tgz' -o -name '*.zip' -o -name 'manifest.json' \) -print -quit | grep -q .; then
+            echo "ERROR: No expected archive or manifest files found in artifacts" >&2
+            exit 1
+          fi
+
+          echo "Artifacts directory passed basic validation checks."
+
+          if [[ ! -d "$ARTIFACT_DIR" ]]; then
             echo "ERROR: ARTIFACT_DIR does not exist or is not a directory: $ARTIFACT_DIR" >&2
             exit 1
           fi
@@ -442,6 +471,21 @@ jobs:
           ARTIFACT_DIR: ${{ steps.paths.outputs.artifact_dir }}
         run: |
           set -euo pipefail
+
+          if [[ -z "${ARTIFACT_DIR:-}" ]]; then
+            echo "ERROR: ARTIFACT_DIR is not set before staging binaries" >&2
+            exit 1
+          fi
+
+          if [[ ! -d "$ARTIFACT_DIR" ]]; then
+            echo "ERROR: ARTIFACT_DIR does not exist before staging: $ARTIFACT_DIR" >&2
+            exit 1
+          fi
+
+          if ! find "$ARTIFACT_DIR" -mindepth 1 -print -quit | grep -q .; then
+            echo "ERROR: ARTIFACT_DIR is empty; nothing to stage" >&2
+            exit 1
+          fi
 
           echo "Staging binary from validated artifacts in: $ARTIFACT_DIR"
 
