@@ -154,6 +154,46 @@ jobs:
             exit 1
           fi
 
+          # Refuse artifacts containing absolute paths or path traversal
+          echo "Checking for unsafe paths in artifacts..."
+          while IFS= read -r -d '' path; do
+            rel="${path#"$ARTIFACT_DIR"/}"
+            if [[ "$rel" = /* ]] || [[ "$rel" == *".."* ]]; then
+              echo "ERROR: Unsafe artifact path detected: $rel" >&2
+              exit 1
+            fi
+          done < <(find "$ARTIFACT_DIR" -mindepth 1 -print0)
+
+          # Ensure only expected file types are present (adjust pattern as needed)
+          echo "Checking artifact file types..."
+          unexpected_files=0
+          while IFS= read -r -d '' f; do
+            case "$f" in
+              *.tar|*.tar.gz|*.tgz|*.zip|*.sha256|*.txt|*.json)
+                ;;
+              *)
+                echo "ERROR: Unexpected file in artifacts: $f" >&2
+                unexpected_files=1
+                ;;
+            esac
+          done < <(find "$ARTIFACT_DIR" -type f -print0)
+
+          if [[ "$unexpected_files" -ne 0 ]]; then
+            echo "ERROR: One or more unexpected files were found in artifacts; aborting." >&2
+            exit 1
+          fi
+
+          # Require at least one artifact file
+          if ! find "$ARTIFACT_DIR" -type f | grep -q .; then
+            echo "ERROR: No artifact files found in $ARTIFACT_DIR" >&2
+            exit 1
+          fi
+
+          if [[ ! -d "$ARTIFACT_DIR" ]]; then
+            echo "ERROR: ARTIFACT_DIR does not exist or is not a directory: $ARTIFACT_DIR" >&2
+            exit 1
+          fi
+
           echo "Listing downloaded artifact contents:"
           find "$ARTIFACT_DIR" -mindepth 1 -maxdepth 5 -print || true
 
