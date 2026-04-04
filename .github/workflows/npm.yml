@@ -154,6 +154,39 @@ jobs:
             exit 1
           fi
 
+          echo "Listing downloaded artifact contents:"
+          find "$ARTIFACT_DIR" -mindepth 1 -maxdepth 5 -print || true
+
+          # Ensure there is at least one file present
+          if ! find "$ARTIFACT_DIR" -type f -mindepth 1 -maxdepth 10 | read -r _; then
+            echo "ERROR: No files found in ARTIFACT_DIR after download" >&2
+            exit 1
+          fi
+
+          # Disallow symlinks in artifacts to prevent path escape / poisoning
+          if find "$ARTIFACT_DIR" -type l -mindepth 1 -maxdepth 20 | grep -q .; then
+            echo "ERROR: Symlinks detected in artifact directory; refusing to continue" >&2
+            find "$ARTIFACT_DIR" -type l -mindepth 1 -maxdepth 20 -print >&2 || true
+            exit 1
+          fi
+
+          # Reject any files with suspicious path components (.. or absolute paths)
+          while IFS= read -r relpath; do
+            case "$relpath" in
+              *"../"*|*".."|/*)
+                echo "ERROR: Suspicious path in artifacts: $relpath" >&2
+                exit 1
+                ;;
+            esac
+          done < <(cd "$ARTIFACT_DIR" && find . -mindepth 1 -maxdepth 20 -print | sed 's|^\./||')
+
+          echo "Artifact directory structure passed basic safety checks."
+
+          if [[ ! -d "$ARTIFACT_DIR" ]]; then
+            echo "ERROR: ARTIFACT_DIR does not exist or is not a directory: $ARTIFACT_DIR" >&2
+            exit 1
+          fi
+
           # Require at least one file to have been downloaded
           if ! find "$ARTIFACT_DIR" -type f -mindepth 1 -print -quit | grep -q .; then
             echo "ERROR: No files found in ARTIFACT_DIR ($ARTIFACT_DIR)" >&2
