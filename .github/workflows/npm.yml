@@ -150,6 +150,43 @@ jobs:
           fi
 
           if [[ ! -d "$ARTIFACT_DIR" ]]; then
+            echo "ERROR: ARTIFACT_DIR does not exist or is not a directory: $ARTIFACT_DIR" >&2
+            exit 1
+          fi
+
+          # Ensure the directory is not world-writable.
+          perms="$(stat -c '%a' "$ARTIFACT_DIR" || echo '')"
+          if [[ -n "$perms" && "${perms: -1}" -ge 6 ]]; then
+            echo "ERROR: ARTIFACT_DIR is world-writable (perms=$perms)" >&2
+            exit 1
+          fi
+
+          echo "Listing contents of ARTIFACT_DIR:"
+          find "$ARTIFACT_DIR" -maxdepth 3 -mindepth 1 -print || true
+
+          # Fail if directory is empty.
+          if ! find "$ARTIFACT_DIR" -mindepth 1 -print -quit | grep -q .; then
+            echo "ERROR: ARTIFACT_DIR is empty; no artifacts downloaded" >&2
+            exit 1
+          fi
+
+          # Disallow symlinks to avoid artifact-based path escapes.
+          if find "$ARTIFACT_DIR" -type l -print -quit | grep -q .; then
+            echo "ERROR: Symlinks detected in ARTIFACT_DIR; refusing to continue" >&2
+            find "$ARTIFACT_DIR" -type l -ls >&2 || true
+            exit 1
+          fi
+
+          # Basic sanity check on file paths to prevent obvious traversal attempts.
+          if find "$ARTIFACT_DIR" -mindepth 1 -print | grep -E '/\.\./|^\.\./|\.\.$' | grep -q .; then
+            echo "ERROR: Suspicious '..' components detected in artifact paths" >&2
+            find "$ARTIFACT_DIR" -mindepth 1 -print >&2 || true
+            exit 1
+          fi
+
+          echo "Artifact directory validation completed successfully."
+
+          if [[ ! -d "$ARTIFACT_DIR" ]]; then
             echo "ERROR: Artifact directory does not exist: $ARTIFACT_DIR" >&2
             exit 1
           fi
