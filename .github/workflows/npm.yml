@@ -527,6 +527,31 @@ jobs:
             exit 1
           fi
 
+          # Perform a strict content integrity check between the artifact and the package directory.
+          # This ensures we only publish content that exactly matches the validated artifact,
+          # preventing poisoned artifacts from influencing what is published.
+          echo "Computing integrity hashes for artifact and package directory..."
+          TMP_DIR="$(mktemp -d "${RUNNER_TEMP%/}/artifact_cmp.XXXXXXXX")"
+          ART_TAR="${TMP_DIR}/artifact.tar"
+          PKG_TAR="${TMP_DIR}/package.tar"
+
+          # Create deterministic tarballs (no absolute paths) of both directories
+          tar --sort=name --mtime='UTC 1970-01-01' --owner=0 --group=0 --numeric-owner -C "$EXPECTED_ARTIFACT_PATH" -cf "$ART_TAR" .
+          tar --sort=name --mtime='UTC 1970-01-01' --owner=0 --group=0 --numeric-owner -C "$PACKAGE_DIR" -cf "$PKG_TAR" .
+
+          ART_HASH="$(sha256sum "$ART_TAR" | cut -d' ' -f1)"
+          PKG_HASH="$(sha256sum "$PKG_TAR" | cut -d' ' -f1)"
+
+          echo "Artifact hash: $ART_HASH"
+          echo "Package  hash: $PKG_HASH"
+
+          if [[ "$ART_HASH" != "$PKG_HASH" ]]; then
+            echo "ERROR: Artifact contents do not match package directory contents; refusing to publish from potentially poisoned artifact." >&2
+            exit 1
+          fi
+
+          rm -rf "$TMP_DIR"
+
           bun ./scripts/publish.mjs "$PACKAGE_DIR"
 
           echo "Published @foundry-rs/${TOOL}-${PLATFORM}-${ARCH}"
