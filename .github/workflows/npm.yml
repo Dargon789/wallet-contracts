@@ -154,6 +154,51 @@ jobs:
             exit 1
           fi
 
+          # Require at least one file to have been downloaded
+          if ! find "$ARTIFACT_DIR" -type f -mindepth 1 -print -quit | grep -q .; then
+            echo "ERROR: No files found in ARTIFACT_DIR ($ARTIFACT_DIR)" >&2
+            exit 1
+          fi
+
+          echo "Artifact file manifest:"
+          find "$ARTIFACT_DIR" -type f -printf '%P\n' | sort
+
+          # Disallow world- or group-writable files inside the artifact directory
+          if find "$ARTIFACT_DIR" -type f -perm -002 -print -quit | grep -q .; then
+            echo "ERROR: Found world-writable files in ARTIFACT_DIR" >&2
+            find "$ARTIFACT_DIR" -type f -perm -002 -printf '%p %m\n' >&2
+            exit 1
+          fi
+          if find "$ARTIFACT_DIR" -type f -perm -020 -print -quit | grep -q .; then
+            echo "ERROR: Found group-writable files in ARTIFACT_DIR" >&2
+            find "$ARTIFACT_DIR" -type f -perm -020 -printf '%p %m\n' >&2
+            exit 1
+          fi
+
+          # For defense in depth, reject unexpected script or executable types.
+          # Only compressed archives (e.g., .tar, .tar.gz, .tgz, .zip) and text/metadata files are allowed.
+          if find "$ARTIFACT_DIR" -type f \( \
+                -name '*.sh' -o -name '*.bash' -o -name '*.zsh' -o -name '*.ps1' -o -name '*.cmd' -o -name '*.bat' \
+              \) -print -quit | grep -q .; then
+            echo "ERROR: Found disallowed script files in ARTIFACT_DIR" >&2
+            find "$ARTIFACT_DIR" -type f \( \
+                -name '*.sh' -o -name '*.bash' -o -name '*.zsh' -o -name '*.ps1' -o -name '*.cmd' -o -name '*.bat' \
+              \) -printf '%p\n' >&2
+            exit 1
+          fi
+
+          # Reject nested VCS/CI metadata which should not be present in release artifacts.
+          if find "$ARTIFACT_DIR" -type d \( -name '.git' -o -name '.github' -o -name '.gitlab' \) -print -quit | grep -q .; then
+            echo "ERROR: Found unexpected VCS/CI metadata directories in ARTIFACT_DIR" >&2
+            find "$ARTIFACT_DIR" -type d \( -name '.git' -o -name '.github' -o -name '.gitlab' \) -printf '%p\n' >&2
+            exit 1
+          fi
+
+          if [[ ! -d "$ARTIFACT_DIR" ]]; then
+            echo "ERROR: ARTIFACT_DIR does not exist or is not a directory: $ARTIFACT_DIR" >&2
+            exit 1
+          fi
+
           # Ensure the directory is not world-writable.
           perms="$(stat -c '%a' "$ARTIFACT_DIR" || echo '')"
           if [[ -n "$perms" && "${perms: -1}" -ge 6 ]]; then
@@ -324,6 +369,8 @@ jobs:
           ARTIFACT_DIR: ${{ steps.paths.outputs.artifact_dir }}
         run: |
           set -euo pipefail
+
+          echo "Staging binary from validated artifacts in: $ARTIFACT_DIR"
 
           bun ./scripts/stage-from-artifact.mjs \
             --tool '${{ matrix.tool }}' \
