@@ -300,6 +300,37 @@ jobs:
 
           printf 'RELEASE_VERSION=%s\n' "$RELEASE_VERSION" >>"$GITHUB_OUTPUT"
 
+      - name: Validate Binary Artifact For Matrix
+        working-directory: ./npm
+        env:
+          ARTIFACT_DIR: ${{ steps.paths.outputs.artifact_dir }}
+        run: |
+          set -euo pipefail
+
+          TOOL='${{ matrix.tool }}'
+          PLATFORM='${{ matrix.os }}'
+          ARCH='${{ matrix.arch }}'
+
+          if [[ -z "${ARTIFACT_DIR:-}" ]]; then
+            echo "ERROR: ARTIFACT_DIR is not set" >&2
+            exit 1
+          fi
+          if [[ ! -d "$ARTIFACT_DIR" ]]; then
+            echo "ERROR: ARTIFACT_DIR does not exist: $ARTIFACT_DIR" >&2
+            exit 1
+          fi
+
+          echo "Validating artifacts in: $ARTIFACT_DIR for ${TOOL}-${PLATFORM}-${ARCH}"
+          ls -la "$ARTIFACT_DIR" || true
+
+          MATCHING_FILES=$(find "$ARTIFACT_DIR" -maxdepth 2 -type f \( -name "*${TOOL}*${PLATFORM}*${ARCH}*" -o -name "*${TOOL}-${PLATFORM}-${ARCH}*" \) | head -n 1 || true)
+          if [[ -z "${MATCHING_FILES:-}" ]]; then
+            echo "ERROR: No artifact files found in $ARTIFACT_DIR for ${TOOL}-${PLATFORM}-${ARCH}" >&2
+            exit 1
+          fi
+
+          echo "Found matching artifact file(s) for ${TOOL}-${PLATFORM}-${ARCH}"
+
       - name: Stage Binary Into Package
         working-directory: ./npm
         env:
