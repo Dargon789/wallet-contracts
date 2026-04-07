@@ -1,0 +1,13 @@
+{
+  "devDependencies": {
+    "lefthook": "^1.6.1",
+    "prettier": "^3.2.5"
+  },
+  "scripts": {
+    "postinstall": "lefthook install",
+    "format:prettier": "prettier --write \"**/*.{js,jsx,ts,tsx,json,md,yml,yaml}\"",
+    "format:forge": "forge fmt",
+    "test": "forge test",
+    "coverage": "forge coverage --no-match-coverage \"(script|test)\""
+  }
+}
