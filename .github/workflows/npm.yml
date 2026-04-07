@@ -149,6 +149,65 @@ jobs:
             exit 1
           fi
 
+          # Ensure ARTIFACT_DIR is under the runner temp directory to avoid clobbering workspace files
+          case "$ARTIFACT_DIR" in
+            "$RUNNER_TEMP"/*) ;;
+            *)
+              echo "ERROR: ARTIFACT_DIR ($ARTIFACT_DIR) is not under RUNNER_TEMP ($RUNNER_TEMP)" >&2
+              exit 1
+              ;;
+          esac
+
+          if [[ ! -d "$ARTIFACT_DIR" ]]; then
+            echo "ERROR: ARTIFACT_DIR does not exist or is not a directory: $ARTIFACT_DIR" >&2
+            exit 1
+          fi
+
+          # Fail if directory is empty – we expect at least one artifact file
+          if ! find "$ARTIFACT_DIR" -mindepth 1 -print -quit | grep -q .; then
+            echo "ERROR: No files found in ARTIFACT_DIR: $ARTIFACT_DIR" >&2
+            exit 1
+          fi
+
+          echo "Listing downloaded artifact contents:"
+          find "$ARTIFACT_DIR" -maxdepth 5 -printf '%y %p\n' | sed 's/^/  /'
+
+          # Disallow symlinks and special files inside the artifact directory
+          if find "$ARTIFACT_DIR" -type l -print -quit | grep -q .; then
+            echo "ERROR: Symlinks detected in ARTIFACT_DIR; refusing to proceed." >&2
+            find "$ARTIFACT_DIR" -type l -printf '  symlink: %p -> %l\n' || true
+            exit 1
+          fi
+
+          if find "$ARTIFACT_DIR" -not -type d -a -not -type f -print -quit | grep -q .; then
+            echo "ERROR: Special files detected in ARTIFACT_DIR (only regular files and directories are allowed)." >&2
+            find "$ARTIFACT_DIR" -not -type d -a -not -type f -printf '  special: %y %p\n' || true
+            exit 1
+          fi
+
+          # Optional hardening: only allow expected file extensions / names.
+          # Adjust this allowlist if your artifacts include other file types.
+          disallowed_found=0
+          while IFS= read -r -d '' f; do
+            base="$(basename "$f")"
+            case "$base" in
+              *.tar|*.tar.gz|*.tgz|*.zip|*.xz|*.bz2) ;;
+              # allow typical Unix/Windows binaries without extension or with .exe
+              forge|cast|anvil|chisel|forge.exe|cast.exe|anvil.exe|chisel.exe) ;;
+              *)
+                echo "ERROR: Unexpected artifact file: $f" >&2
+                disallowed_found=1
+                ;;
+            esac
+          done < <(find "$ARTIFACT_DIR" -type f -print0)
+
+          if [[ "$disallowed_found" -ne 0 ]]; then
+            echo "ERROR: One or more unexpected files were found in ARTIFACT_DIR; aborting." >&2
+            exit 1
+          fi
+
+          echo "Artifact validation completed successfully."
+
           if [[ ! -d "$ARTIFACT_DIR" ]]; then
             echo "ERROR: Artifact directory does not exist: $ARTIFACT_DIR" >&2
             exit 1
