@@ -27,12 +27,12 @@ Please refer to the [sequence.js](https://github.com/0xsequence/sequence.js) rep
 If you wish to use the Sequence Wallet Contracts `@0xsequence/wallet-contracts` directly:
 
 1. Install the contracts: `yarn add @0xsequence/wallet-contracts` or `npm install @0xsequence/wallet-contracts`
-2. Install the Sequence Wallet libraries: `yarn add @0xsequence/wallet` or `npm install @0xsequence/wallet`. You can view the source,
-   of the [wallet libraries](https://github.com/0xsequence/sequence.js/tree/master/packages/wallet), and review the
+2. Install the Sequence Wallet libraries: `yarn add @0xsequence/wallet` or `npm install @0xsequence/wallet`. You can view the source of
+   the [wallet libraries](https://github.com/0xsequence/sequence.js/tree/master/packages/wallet) and review the
    [Sequence tests](https://github.com/0xsequence/sequence.js/tree/master/packages/0xsequence) for sample usage.
 
-**NOTE:** this integration is only needed if you want low-level access to the Sequence Wallet contracts, such as if you'd building
-your own custom wallet, or perhaps a CLI tool for managing your wallet.
+**NOTE:** this integration is only needed if you want low-level access to the Sequence Wallet contracts, such as if you're building
+ your own custom wallet, or perhaps a CLI tool for managing your wallet.
 
 ## Security Review
 
@@ -41,7 +41,7 @@ your own custom wallet, or perhaps a CLI tool for managing your wallet.
 ### V2 Audits
 
 - [Consensys Diligence](https://github.com/0xsequence/wallet-contracts/blob/master/audits/v2/consensys-horizon-sequence-wallet-audit-2023-02.pdf) - February 2023
-- [Zellic](https://github.com/0xsequence/wallet-contracts/raw/master/audits/Quantstamp_Arcadeum_Report_Final.pdf) - March 2023
+- [Zellic](https://github.com/0xsequence/wallet-contracts/blob/master/audits/v2/zellic-sequence-wallet-audit-2023-03.pdf) - March 2023
 
 ### V1 Audits
 
