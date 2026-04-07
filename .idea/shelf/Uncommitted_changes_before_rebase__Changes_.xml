@@ -1,0 +1,37 @@
+<changelist name="Uncommitted_changes_before_rebase_[Changes]" date="1772971625844" recycled="false" toDelete="true">
+  <option name="PATH" value="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_rebase_[Changes]/shelved.patch" />
+  <option name="DESCRIPTION" value="Uncommitted changes before rebase [Changes]" />
+  <binary>
+    <option name="BEFORE_PATH" value="lib/signals-implicit-mode/lib/signals-implicit-mode/lib/sequence-v3/lib/openzeppelin-contracts/docs/modules/ROOT/images/erc4626-attack-3b.png" />
+  </binary>
+  <binary>
+    <option name="BEFORE_PATH" value="lib/signals-implicit-mode/lib/signals-implicit-mode/lib/sequence-v3/lib/openzeppelin-contracts/docs/modules/ROOT/images/erc4626-deposit.png" />
+  </binary>
+  <binary>
+    <option name="BEFORE_PATH" value="lib/signals-implicit-mode/lib/signals-implicit-mode/lib/sequence-v3/lib/openzeppelin-contracts/docs/modules/ROOT/images/tally-exec.png" />
+  </binary>
+  <binary>
+    <option name="BEFORE_PATH" value="lib/signals-implicit-mode/lib/signals-implicit-mode/lib/sequence-v3/lib/openzeppelin-contracts/docs/modules/ROOT/images/erc4626-attack-3a.png" />
+  </binary>
+  <binary>
+    <option name="BEFORE_PATH" value="lib/signals-implicit-mode/lib/signals-implicit-mode/lib/sequence-v3/lib/openzeppelin-contracts/docs/modules/ROOT/images/erc4626-rate-loglogext.png" />
+  </binary>
+  <binary>
+    <option name="BEFORE_PATH" value="lib/signals-implicit-mode/lib/signals-implicit-mode/lib/sequence-v3/lib/openzeppelin-contracts/docs/modules/ROOT/images/erc4626-attack.png" />
+  </binary>
+  <binary>
+    <option name="BEFORE_PATH" value="lib/signals-implicit-mode/lib/signals-implicit-mode/lib/sequence-v3/lib/openzeppelin-contracts/docs/modules/ROOT/images/erc4626-attack-6.png" />
+  </binary>
+  <binary>
+    <option name="BEFORE_PATH" value="lib/signals-implicit-mode/lib/signals-implicit-mode/lib/sequence-v3/lib/openzeppelin-contracts/docs/modules/ROOT/images/erc4626-rate-linear.png" />
+  </binary>
+  <binary>
+    <option name="BEFORE_PATH" value="lib/signals-implicit-mode/lib/signals-implicit-mode/lib/sequence-v3/lib/openzeppelin-contracts/docs/modules/ROOT/images/erc4626-rate-loglog.png" />
+  </binary>
+  <binary>
+    <option name="BEFORE_PATH" value="lib/signals-implicit-mode/lib/signals-implicit-mode/lib/sequence-v3/lib/openzeppelin-contracts/docs/modules/ROOT/images/tally-vote.png" />
+  </binary>
+  <binary>
+    <option name="BEFORE_PATH" value="lib/signals-implicit-mode/lib/signals-implicit-mode/lib/sequence-v3/lib/openzeppelin-contracts/docs/modules/ROOT/images/erc4626-mint.png" />
+  </binary>
+</changelist>
