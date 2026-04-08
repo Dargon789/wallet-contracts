@@ -390,6 +390,47 @@ jobs:
 
           echo "Found matching artifact file(s) for ${TOOL}-${PLATFORM}-${ARCH}"
 
+      - name: Validate Artifacts For Matrix
+        working-directory: ./npm
+        env:
+          ARTIFACT_DIR: ${{ steps.paths.outputs.artifact_dir }}
+        run: |
+          set -euo pipefail
+
+          if [[ -z "${ARTIFACT_DIR:-}" ]]; then
+            echo "ERROR: ARTIFACT_DIR is not set" >&2
+            exit 1
+          fi
+
+          # Ensure ARTIFACT_DIR is under the runner temp directory
+          case "$ARTIFACT_DIR" in
+            "$RUNNER_TEMP"/*) ;;
+            *)
+              echo "ERROR: ARTIFACT_DIR ($ARTIFACT_DIR) is not under RUNNER_TEMP ($RUNNER_TEMP)" >&2
+              exit 1
+              ;;
+          esac
+
+          if [[ ! -d "$ARTIFACT_DIR" ]]; then
+            echo "ERROR: ARTIFACT_DIR does not exist or is not a directory: $ARTIFACT_DIR" >&2
+            exit 1
+          fi
+
+          echo "Listing artifacts in $ARTIFACT_DIR for tool='${{ matrix.tool }}' platform='${{ matrix.os }}' arch='${{ matrix.arch }}'"
+          find "$ARTIFACT_DIR" -maxdepth 3 -type f -print
+
+          # Basic path traversal protection: disallow entries containing '..' components
+          if find "$ARTIFACT_DIR" -maxdepth 10 -print | grep -E '/\.\./' >/dev/null; then
+            echo "ERROR: Found artifact paths containing '..' components in $ARTIFACT_DIR" >&2
+            exit 1
+          fi
+
+          # Require at least one file to be present
+          if ! find "$ARTIFACT_DIR" -type f -maxdepth 10 | read -r _; then
+            echo "ERROR: No files found in ARTIFACT_DIR: $ARTIFACT_DIR" >&2
+            exit 1
+          fi
+
       - name: Stage Binary Into Package
         working-directory: ./npm
         env:
