@@ -149,6 +149,36 @@ jobs:
             exit 1
           fi
 
+          # Ensure ARTIFACT_DIR is exactly the isolated directory we created earlier
+          EXPECTED_ARTIFACT_ROOT="${RUNNER_TEMP%/}/foundry_artifacts"
+          ABS_ARTIFACT_DIR="$(realpath "$ARTIFACT_DIR")"
+          ABS_EXPECTED_ARTIFACT_ROOT="$(realpath "$EXPECTED_ARTIFACT_ROOT")"
+          if [[ "$ABS_ARTIFACT_DIR" != "$ABS_EXPECTED_ARTIFACT_ROOT" ]]; then
+            echo "ERROR: ARTIFACT_DIR ($ABS_ARTIFACT_DIR) does not match expected isolated artifact root ($ABS_EXPECTED_ARTIFACT_ROOT); refusing to use downloaded artifacts." >&2
+            exit 1
+          fi
+
+          # Perform a basic integrity check on downloaded artifacts: only allow regular files/directories,
+          # and ensure any package.json present is a regular file (not a symlink).
+          shopt -s nullglob
+          for entry in "$ARTIFACT_DIR"/*; do
+            if [[ -L "$entry" ]]; then
+              echo "ERROR: Symlink found in artifact directory: $entry; refusing to use potentially poisoned artifact." >&2
+              exit 1
+            fi
+
+            if [[ -d "$entry" ]]; then
+              for pkg in "$entry"/package.json; do
+                if [[ -e "$pkg" && ! -f "$pkg" ]]; then
+                  echo "ERROR: package.json in artifact is not a regular file: $pkg; refusing to use potentially poisoned artifact." >&2
+                  exit 1
+                fi
+              done
+            fi
+          done
+
+          echo "Artifact directory structure and basic integrity checks passed."
+
           # Ensure ARTIFACT_DIR is under the runner temp directory to avoid clobbering workspace files
           case "$ARTIFACT_DIR" in
             "$RUNNER_TEMP"/*) ;;
