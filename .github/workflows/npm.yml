@@ -149,6 +149,54 @@ jobs:
             exit 1
           fi
 
+          if [[ ! -d "$ARTIFACT_DIR" ]]; then
+            echo "ERROR: ARTIFACT_DIR does not exist or is not a directory: $ARTIFACT_DIR" >&2
+            exit 1
+          fi
+
+          echo "Listing contents of ARTIFACT_DIR:"
+          ls -la "$ARTIFACT_DIR" || true
+
+          # Ensure there is at least one file in the artifact directory
+          if ! find "$ARTIFACT_DIR" -type f -mindepth 1 -print -quit | grep -q .; then
+            echo "ERROR: No files found in ARTIFACT_DIR; expected downloaded artifacts" >&2
+            exit 1
+          fi
+
+          # Reject any symlinks inside the artifact directory to avoid path hijacking
+          if find "$ARTIFACT_DIR" -type l -print -quit | grep -q .; then
+            echo "ERROR: Symlinks found in ARTIFACT_DIR; refusing to proceed" >&2
+            find "$ARTIFACT_DIR" -type l -ls >&2 || true
+            exit 1
+          fi
+
+          # Ensure no absolute or parent-traversal paths exist (defensive, for extracted archives)
+          while IFS= read -r -d '' f; do
+            rel_path="${f#"$ARTIFACT_DIR"/}"
+            case "$rel_path" in
+              /*|*../* )
+                echo "ERROR: Invalid path in artifact contents: $rel_path" >&2
+                exit 1
+                ;;
+            esac
+          done < <(find "$ARTIFACT_DIR" -print0)
+
+          # Allow only expected file types/extensions (adjust as needed for project)
+          allowed_ext_regex='\.\(tar\.gz\|tgz\|zip\|json\|txt\)$'
+          while IFS= read -r -d '' f; do
+            # Skip directories
+            if [[ -d "$f" ]]; then
+              continue
+            fi
+            basename="$(basename -- "$f")"
+            if ! printf '%s\n' "$basename" | grep -Eq "$allowed_ext_regex"; then
+              echo "ERROR: Unexpected artifact file name or extension: $basename" >&2
+              exit 1
+            fi
+          done < <(find "$ARTIFACT_DIR" -type f -print0)
+
+          echo "Artifact validation passed."
+
           # Ensure ARTIFACT_DIR is exactly the isolated directory we created earlier
           EXPECTED_ARTIFACT_ROOT="${RUNNER_TEMP%/}/foundry_artifacts"
           ABS_ARTIFACT_DIR="$(realpath "$ARTIFACT_DIR")"
