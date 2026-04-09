@@ -128,9 +128,8 @@ jobs:
       - name: Download Release Assets
         uses: actions/download-artifact@v7
         with:
-          merge-multiple: true
-          # Download all foundry artifacts from the triggering release run
-          pattern: "foundry_*"
+          # Download only the artifact expected for this matrix entry.
+          pattern: "foundry_${{ matrix.tool }}-${{ matrix.os }}-${{ matrix.arch }}"
           # Extract artifacts into an isolated temp directory, not the workspace
           path: ${{ steps.paths.outputs.artifact_dir }}
           github-token: ${{ secrets.GITHUB_TOKEN }}
