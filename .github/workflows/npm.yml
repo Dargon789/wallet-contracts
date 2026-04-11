@@ -125,6 +125,18 @@ jobs:
           mkdir -p "$ARTIFACT_DIR"
           ls -la "$ARTIFACT_DIR" || true
 
+      - name: Verify Trusted Artifact Source
+        run: |
+          set -euo pipefail
+          if [[ "${{ github.event_name }}" != "workflow_run" ]]; then
+            echo "ERROR: Artifact download is only allowed from workflow_run triggers." >&2
+            exit 1
+          fi
+          if [[ -z "${{ github.event.workflow_run.id }}" ]]; then
+            echo "ERROR: Missing workflow_run.id for artifact download." >&2
+            exit 1
+          fi
+
       - name: Download Release Assets
         uses: actions/download-artifact@v7
         with:
@@ -134,7 +146,7 @@ jobs:
           # Extract artifacts into an isolated temp directory, not the workspace
           path: ${{ steps.paths.outputs.artifact_dir }}
           github-token: ${{ secrets.GITHUB_TOKEN }}
-          run-id: ${{ github.event.workflow_run.id || inputs.run_id }}
+          run-id: ${{ github.event.workflow_run.id }}
 
       - name: Validate Downloaded Artifacts
         env:
