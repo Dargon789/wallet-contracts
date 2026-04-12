@@ -125,6 +125,21 @@ jobs:
           mkdir -p "$ARTIFACT_DIR"
           ls -la "$ARTIFACT_DIR" || true
 
+      - name: Validate workflow_run trust before downloading artifacts
+        if: ${{ github.event_name == 'workflow_run' }}
+        run: |
+          set -euo pipefail
+
+          if [[ "${{ github.event.workflow_run.conclusion }}" != "success" ]]; then
+            echo "ERROR: Refusing to use artifacts from non-success workflow_run conclusion: ${{ github.event.workflow_run.conclusion }}" >&2
+            exit 1
+          fi
+
+          if [[ "${{ github.event.workflow_run.head_repository.full_name }}" != "${{ github.repository }}" ]]; then
+            echo "ERROR: Refusing to use artifacts from external repository: ${{ github.event.workflow_run.head_repository.full_name }}" >&2
+            exit 1
+          fi
+
       - name: Download Release Assets
         uses: actions/download-artifact@v7
         with:
