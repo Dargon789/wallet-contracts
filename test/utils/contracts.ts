@@ -49,10 +49,8 @@ export const DelegateCallMock = adapt<t.DelegateCallMock>("DelegateCallMock")
 export const GasBurnerMock = adapt<t.GasBurnerMock>("GasBurnerMock")
 export const GasEstimator = adapt<t.GasEstimator>("GasEstimator")
 export const MainModuleGasEstimation = adapt<t.MainModuleGasEstimation>("MainModuleGasEstimation")
-export const Ownable = adapt<t.Ownable>("Ownable")
-export const Timelock = adapt<t.Timelock>("Timelock")
-export const MainModuleAutoUpdate = adapt<t.MainModuleAutoUpdate>("MainModuleAutoUpdate")
-export const ModuleRepository = adapt<t.ModuleRepository>("ModuleRepository")
+export const LibStringImp = adapt<t.LibStringImp>("LibStringImp")
+export const AlwaysRevertMock = adapt<t.AlwaysRevertMock>("AlwaysRevertMock")
 
 ;[
   LibBytesImpl,
@@ -71,47 +69,17 @@ export const ModuleRepository = adapt<t.ModuleRepository>("ModuleRepository")
   GasEstimator
 ].map((c) => c.cache())
 
-export const deploySequenceContext = async () => {
+export const deploySequenceContext = async (owner?: string) => {
   const factory = await Factory.deploy()
+
   const mainModuleUpgradable = await MainModuleUpgradable.deploy()
+
   const mainModule = await MainModule.deploy(
     factory.address,
-    mainModuleUpgradable.address,
-    ethers.constants.AddressZero
+    mainModuleUpgradable.address
   )
 
   return { factory, mainModule, mainModuleUpgradable }
-}
-
-export const deploySequenceAutoUpdate = async (context: SequenceContext ) => {
-  const owner = hethers.provider.getSigner(0)
-  const repository = await ModuleRepository.deploy(await owner.getAddress())
-
-  const keyMainModule = ethers.utils.keccak256(ethers.utils.toUtf8Bytes("sequence.mainModule"))
-  const keyMainModuleUpgradable = ethers.utils.keccak256(ethers.utils.toUtf8Bytes("sequence.mainModuleUpgradable"))
-
-  const mainModuleAuto = await MainModuleAutoUpdate.deploy(keyMainModule, repository.address)
-  const mainModuleUpgradableAuto = await MainModuleAutoUpdate.deploy(keyMainModuleUpgradable, repository.address)
-
-  const mainModuleForAutoUpdate = await MainModule.deploy(
-    context.factory.address,
-    mainModuleUpgradableAuto.address,
-    mainModuleAuto.address
-  )
-
-  await repository.setModule(keyMainModule, mainModuleForAutoUpdate.address)
-  await repository.setModule(keyMainModuleUpgradable, context.mainModuleUpgradable.address)
-
-  return {
-    ...context,
-    repository,
-    moduleKeys: {
-      keyMainModule,
-      keyMainModuleUpgradable
-    },
-    mainModule: MainModule.attach(mainModuleAuto.address),
-    mainModuleUpgradable: MainModuleUpgradable.attach(mainModuleUpgradableAuto.address)
-  }
 }
 
 export type SequenceContext = {
