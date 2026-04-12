@@ -515,7 +515,7 @@ contract('MainModule', (accounts: string[]) => {
         beforeEach(c.beforeEach)
 
         it('Should accept signatures from multiple imageHashes', async () => {
-          const altWallet = SequenceWallet.basicWallet(context, { signing: 3, iddle: 9 })
+          const altWallet = SequenceWallet.basicWallet(context, { signing: 3, idle: 9 })
     
           await wallet.deploy()
           await wallet.addExtraImageHash(altWallet.imageHash)
