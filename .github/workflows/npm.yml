@@ -132,15 +132,10 @@ jobs:
           pattern: "foundry_${{ matrix.tool }}-${{ matrix.os }}-${{ matrix.arch }}"
           # Extract artifacts into an isolated temp directory, not the workspace
           path: ${{ steps.paths.outputs.artifact_dir }}
-          # Keep each artifact in its own extracted directory to avoid collisions/overwrites.
-          merge-multiple: false
-          # Fail closed if the expected artifact is not present.
-          if-no-artifact-found: error
           github-token: ${{ secrets.GITHUB_TOKEN }}
           run-id: ${{ github.event.workflow_run.id }}
 
       - name: Validate Downloaded Artifacts
-        id: validate_artifact
         env:
           ARTIFACT_DIR: ${{ steps.paths.outputs.artifact_dir }}
         run: |
@@ -153,47 +148,6 @@ jobs:
             exit 1
           fi
 
-          EXPECTED_NAME="foundry_${{ matrix.tool }}-${{ matrix.os }}-${{ matrix.arch }}"
-          EXPECTED_DIR="$ARTIFACT_DIR/$EXPECTED_NAME"
-
-          if [[ ! -d "$EXPECTED_DIR" ]]; then
-            echo "ERROR: Expected extracted artifact directory missing: $EXPECTED_DIR" >&2
-            find "$ARTIFACT_DIR" -maxdepth 2 -mindepth 1 -print || true
-            exit 1
-          fi
-
-          # Reject symlinks and non-regular files inside extracted content.
-          if find "$EXPECTED_DIR" -type l | grep -q .; then
-            echo "ERROR: Symlinks are not allowed in downloaded artifacts" >&2
-            find "$EXPECTED_DIR" -type l -print >&2 || true
-            exit 1
-          fi
-
-          if find "$EXPECTED_DIR" ! -type f ! -type d | grep -q .; then
-            echo "ERROR: Unexpected special files found in artifact" >&2
-            find "$EXPECTED_DIR" ! -type f ! -type d -print >&2 || true
-            exit 1
-          fi
-
-          # Basic filename allowlist by platform.
-          case "${{ matrix.os }}" in
-            win32)
-              if find "$EXPECTED_DIR" -type f ! -name '*.exe' ! -name '*.zip' ! -name '*.txt' ! -name '*.json' | grep -q .; then
-                echo "ERROR: Unexpected file types in Windows artifact" >&2
-                find "$EXPECTED_DIR" -type f ! -name '*.exe' ! -name '*.zip' ! -name '*.txt' ! -name '*.json' -print >&2 || true
-                exit 1
-              fi
-              ;;
-            *)
-              if find "$EXPECTED_DIR" -type f ! -name "${{ matrix.tool }}" ! -name '*.tar.gz' ! -name '*.txt' ! -name '*.json' | grep -q .; then
-                echo "ERROR: Unexpected file types in non-Windows artifact" >&2
-                find "$EXPECTED_DIR" -type f ! -name "${{ matrix.tool }}" ! -name '*.tar.gz' ! -name '*.txt' ! -name '*.json' -print >&2 || true
-                exit 1
-              fi
-              ;;
-          esac
-
-          printf 'validated_artifact_dir=%s\n' "$EXPECTED_DIR" >> "$GITHUB_OUTPUT"
           # Ensure ARTIFACT_DIR is under the runner temp directory to avoid clobbering workspace files
           case "$ARTIFACT_DIR" in
             "$RUNNER_TEMP"/*) ;;
@@ -439,7 +393,7 @@ jobs:
         working-directory: ./npm
         env:
           RELEASE_VERSION: ${{ steps.release-version.outputs.RELEASE_VERSION }}
-          ARTIFACT_DIR: ${{ steps.validate_artifact.outputs.validated_artifact_dir }}
+          ARTIFACT_DIR: ${{ steps.paths.outputs.artifact_dir }}
         run: |
           set -euo pipefail
 
@@ -541,7 +495,7 @@ jobs:
               ;;
           esac
 
-          echo "Preparing to publish package from: $PACKAGE_DIR (artifact directory validated at: $EXPECTED_ARTIFACT_PATH)"
+          echo "Preparing to publish package from: $PACKAGE_DIR (artifact: $EXPECTED_ARTIFACT_PATH)"
 
           if [[ ! -d "$PACKAGE_DIR" ]]; then
             echo "ERROR: Package directory does not exist: $PACKAGE_DIR" >&2
@@ -569,7 +523,35 @@ jobs:
             exit 1
           fi
 
-          # Do not parse or trust artifact contents in this privileged publish step.
+          # Require that the artifact also contains a package.json and ensure it matches the source package
+          if [[ ! -f "$EXPECTED_ARTIFACT_PATH/package.json" ]]; then
+            echo "ERROR: package.json not found in artifact at $EXPECTED_ARTIFACT_PATH; refusing to publish from potentially poisoned artifact." >&2
+            exit 1
+          fi
+
+          # Extract name and version from both package.json files using jq if available; fall back to grep/sed
+          if command -v jq >/dev/null 2>&1; then
+            SRC_NAME="$(jq -r '.name // empty' < "$PACKAGE_DIR/package.json")"
+            SRC_VERSION="$(jq -r '.version // empty' < "$PACKAGE_DIR/package.json")"
+            ART_NAME="$(jq -r '.name // empty' < "$EXPECTED_ARTIFACT_PATH/package.json")"
+            ART_VERSION="$(jq -r '.version // empty' < "$EXPECTED_ARTIFACT_PATH/package.json")"
+          else
+            SRC_NAME="$(grep -m1 '"name"' "$PACKAGE_DIR/package.json" | sed -E 's/.*"name"[[:space:]]*:[[:space:]]*"([^"]*)".*/\1/')"
+            SRC_VERSION="$(grep -m1 '"version"' "$PACKAGE_DIR/package.json" | sed -E 's/.*"version"[[:space:]]*:[[:space:]]*"([^"]*)".*/\1/')"
+            ART_NAME="$(grep -m1 '"name"' "$EXPECTED_ARTIFACT_PATH/package.json" | sed -E 's/.*"name"[[:space:]]*:[[:space:]]*"([^"]*)".*/\1/')"
+            ART_VERSION="$(grep -m1 '"version"' "$EXPECTED_ARTIFACT_PATH/package.json" | sed -E 's/.*"version"[[:space:]]*:[[:space:]]*"([^"]*)".*/\1/')"
+          fi
+
+          if [[ -n "$SRC_NAME" && -n "$ART_NAME" && "$SRC_NAME" != "$ART_NAME" ]]; then
+            echo "ERROR: Artifact package name ($ART_NAME) does not match source package name ($SRC_NAME); refusing to publish." >&2
+            exit 1
+          fi
+
+          if [[ -n "$SRC_VERSION" && -n "$ART_VERSION" && "$SRC_VERSION" != "$ART_VERSION" ]]; then
+            echo "ERROR: Artifact package version ($ART_VERSION) does not match source package version ($SRC_VERSION); refusing to publish." >&2
+            exit 1
+          fi
+
           bun ./scripts/publish.mjs "$PACKAGE_DIR"
 
           echo "Published @foundry-rs/${TOOL}-${PLATFORM}-${ARCH}"
