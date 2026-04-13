@@ -1,8 +1,8 @@
 name: Changesets
 on:
   push:
-    branches: [main]
-
+    branches: 
+        - main
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
@@ -25,7 +25,7 @@ jobs:
       id-token: write # OpenID Connect token needed for provenance
       pull-requests: write # to create pull request (changesets/action)
     runs-on: ubuntu-latest
-    timeout-minutes: 5
+    timeout-minutes: 10
 
     steps:
       - name: Clone repository
@@ -37,7 +37,7 @@ jobs:
       - name: Install dependencies
         uses: wevm/actions/.github/actions/pnpm@main
         with:
-          node-version: 24.5
+          node-version: 20.12
 
       - name: PR or publish
         uses: changesets/action@e0145edc7d9d8679003495b11f87bd8ef63c0cba
@@ -52,7 +52,7 @@ jobs:
 
       - name: Publish prerelease
         if: steps.changesets.outputs.published != 'true'
-        continue-on-error: true
+        continue-on-error: false
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
