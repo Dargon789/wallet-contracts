@@ -12,7 +12,7 @@ jobs:
       - uses: actions/checkout@v1
       - uses: actions/setup-node@v1
         with:
-          node-version: 22
+          node-version: 18.15
       - uses: actions/cache@master
         id: yarn-cache
         # yarn self-update
