@@ -1,0 +1,32 @@
+<changelist name="Uncommitted_changes_before_Update_at_8_3_2026_15_08_[Changes]" date="1772957333844" recycled="false" toDelete="true">
+  <option name="PATH" value="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_8_3_2026_15_08_[Changes]/shelved.patch" />
+  <option name="DESCRIPTION" value="Uncommitted changes before Update at 8/3/2026 15:08 [Changes]" />
+  <binary>
+    <option name="AFTER_PATH" value="site/public/og.png" />
+    <option name="SHELVED_PATH" value="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_8_3_2026_15_08_[Changes]/og.png" />
+  </binary>
+  <binary>
+    <option name="AFTER_PATH" value="site/public/browsers/firefox.png" />
+    <option name="SHELVED_PATH" value="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_8_3_2026_15_08_[Changes]/firefox.png" />
+  </binary>
+  <binary>
+    <option name="AFTER_PATH" value="site/public/browsers/safari.png" />
+    <option name="SHELVED_PATH" value="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_8_3_2026_15_08_[Changes]/safari.png" />
+  </binary>
+  <binary>
+    <option name="AFTER_PATH" value="playgrounds/nuxt/public/favicon.ico" />
+    <option name="SHELVED_PATH" value="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_8_3_2026_15_08_[Changes]/favicon.ico" />
+  </binary>
+  <binary>
+    <option name="AFTER_PATH" value="site/public/browsers/opera.png" />
+    <option name="SHELVED_PATH" value="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_8_3_2026_15_08_[Changes]/opera.png" />
+  </binary>
+  <binary>
+    <option name="AFTER_PATH" value="site/public/browsers/chrome.png" />
+    <option name="SHELVED_PATH" value="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_8_3_2026_15_08_[Changes]/chrome.png" />
+  </binary>
+  <binary>
+    <option name="AFTER_PATH" value="site/public/browsers/edge.png" />
+    <option name="SHELVED_PATH" value="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_8_3_2026_15_08_[Changes]/edge.png" />
+  </binary>
+</changelist>

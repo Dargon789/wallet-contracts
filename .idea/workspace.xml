@@ -4,266 +4,7 @@
     <option name="autoReloadType" value="NONE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="31e8ee03-bf35-492b-9dc2-a141fbde443e" name="Changes" comment="Per-transaction estimated gas usage and execution results&#10;#101">
-      <change afterPath="$PROJECT_DIR$/.idea/.gitignore" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/copilot.data.migration.ask2agent.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/markdown.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/audits/v2/Sequence Wallet - Zellic Audit Report.pdf" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/audits/v2/consensys-horizon-sequence-wallet-audit-2023-02.pdf" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/contracts/interfaces/receivers/IERC777Receiver.sol" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/foundry_test/modules/utils/RequireUtils.t.sol" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/networks/arbitrumGoerli.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.github/workflows/ci.yml" beforeDir="false" afterPath="$PROJECT_DIR$/.github/workflows/ci.yml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/foundry_test/base/AdvTest.sol" beforeDir="false" afterPath="$PROJECT_DIR$/foundry_test/base/AdvTest.sol" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/foundry_test/modules/commons/Implementation.t.sol" beforeDir="false" afterPath="$PROJECT_DIR$/foundry_test/modules/commons/Implementation.t.sol" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/foundry_test/modules/commons/ModuleCalls.t.sol" beforeDir="false" afterPath="$PROJECT_DIR$/foundry_test/modules/commons/ModuleCalls.t.sol" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/foundry_test/modules/commons/ModuleExtraAuth.t.sol" beforeDir="false" afterPath="$PROJECT_DIR$/foundry_test/modules/commons/ModuleExtraAuth.t.sol" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/foundry_test/modules/commons/ModuleIPFS.t.sol" beforeDir="false" afterPath="$PROJECT_DIR$/foundry_test/modules/commons/ModuleIPFS.t.sol" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/foundry_test/modules/commons/submodules/auth/SequenceBaseSig.t.sol" beforeDir="false" afterPath="$PROJECT_DIR$/foundry_test/modules/commons/submodules/auth/SequenceBaseSig.t.sol" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/foundry_test/modules/commons/submodules/auth/SequenceNoChainIdSig.t.sol" beforeDir="false" afterPath="$PROJECT_DIR$/foundry_test/modules/commons/submodules/auth/SequenceNoChainIdSig.t.sol" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/foundry_test/utils/LibAddress.t.sol" beforeDir="false" afterPath="$PROJECT_DIR$/foundry_test/utils/LibAddress.t.sol" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hardhat.config.ts" beforeDir="false" afterPath="$PROJECT_DIR$/hardhat.config.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/gen/adapter/Factory.d.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/gen/adapter/Factory.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/gen/adapter/common.d.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/gen/adapter/common.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/gen/adapter/factories/Factory__factory.d.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/gen/adapter/factories/index.d.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/gen/adapter/factories/index.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/gen/adapter/factories/interfaces/IERC1271Wallet__factory.d.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/gen/adapter/factories/interfaces/index.d.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/gen/adapter/factories/interfaces/index.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/gen/adapter/factories/interfaces/receivers/IERC1155Receiver__factory.d.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/gen/adapter/factories/interfaces/receivers/IERC223Receiver__factory.d.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/gen/adapter/factories/interfaces/receivers/IERC721Receiver__factory.d.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/gen/adapter/factories/interfaces/receivers/index.d.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/gen/adapter/factories/interfaces/receivers/index.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/gen/adapter/factories/migrations/Migrations__factory.d.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/gen/adapter/factories/migrations/Migrations__factory.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/gen/adapter/factories/migrations/index.d.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/gen/adapter/factories/migrations/index.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/gen/adapter/factories/mocks/CallReceiverMock__factory.d.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/gen/adapter/factories/mocks/CallReceiverMock__factory.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/gen/adapter/factories/mocks/DelegateCallMock__factory.d.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/gen/adapter/factories/mocks/DelegateCallMock__factory.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/gen/adapter/factories/mocks/ERC165CheckerMock__factory.d.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/gen/adapter/factories/mocks/ERC165CheckerMock__factory.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/gen/adapter/factories/mocks/GasBurnerMock__factory.d.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/gen/adapter/factories/mocks/GasBurnerMock__factory.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/gen/adapter/factories/mocks/HookCallerMock__factory.d.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/gen/adapter/factories/mocks/HookCallerMock__factory.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/gen/adapter/factories/mocks/HookMock__factory.d.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/gen/adapter/factories/mocks/HookMock__factory.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/gen/adapter/factories/mocks/LibBytesImpl__factory.d.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/gen/adapter/factories/mocks/LibBytesImpl__factory.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/gen/adapter/factories/mocks/ModuleMock__factory.d.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/gen/adapter/factories/mocks/ModuleMock__factory.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/gen/adapter/factories/mocks/index.d.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/gen/adapter/factories/mocks/index.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/gen/adapter/factories/modules/GuestModule__factory.d.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/gen/adapter/factories/modules/GuestModule__factory.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/gen/adapter/factories/modules/MainModuleGasEstimation__factory.d.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/gen/adapter/factories/modules/MainModuleGasEstimation__factory.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/gen/adapter/factories/modules/MainModuleUpgradable__factory.d.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/gen/adapter/factories/modules/MainModuleUpgradable__factory.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/gen/adapter/factories/modules/MainModule__factory.d.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/gen/adapter/factories/modules/MainModule__factory.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/gen/adapter/factories/modules/commons/ModuleAuthUpgradable__factory.d.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/gen/adapter/factories/modules/commons/ModuleAuth__factory.d.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/gen/adapter/factories/modules/commons/ModuleCalls__factory.d.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/gen/adapter/factories/modules/commons/ModuleCreator__factory.d.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/gen/adapter/factories/modules/commons/ModuleCreator__factory.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/gen/adapter/factories/modules/commons/ModuleERC165__factory.d.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/gen/adapter/factories/modules/commons/ModuleHooks__factory.d.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/gen/adapter/factories/modules/commons/ModuleHooks__factory.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/gen/adapter/factories/modules/commons/ModuleIgnoreAuthUpgradable__factory.d.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/gen/adapter/factories/modules/commons/ModuleIgnoreNonceCalls__factory.d.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/gen/adapter/factories/modules/commons/ModuleUpdate__factory.d.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/gen/adapter/factories/modules/commons/ModuleUpdate__factory.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/gen/adapter/factories/modules/commons/index.d.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/gen/adapter/factories/modules/commons/index.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/gen/adapter/factories/modules/commons/interfaces/IModuleAuthUpgradable__factory.d.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/gen/adapter/factories/modules/commons/interfaces/IModuleCalls__factory.d.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/gen/adapter/factories/modules/commons/interfaces/IModuleCreator__factory.d.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/gen/adapter/factories/modules/commons/interfaces/IModuleHooks__factory.d.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/gen/adapter/factories/modules/commons/interfaces/IModuleUpdate__factory.d.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/gen/adapter/factories/modules/commons/interfaces/index.d.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/gen/adapter/factories/modules/commons/interfaces/index.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/gen/adapter/factories/modules/index.d.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/gen/adapter/factories/modules/index.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/gen/adapter/factories/modules/utils/GasEstimator__factory.d.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/gen/adapter/factories/modules/utils/GasEstimator__factory.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/gen/adapter/factories/modules/utils/MultiCallUtils__factory.d.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/gen/adapter/factories/modules/utils/MultiCallUtils__factory.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/gen/adapter/factories/modules/utils/RequireUtils__factory.d.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/gen/adapter/factories/modules/utils/RequireUtils__factory.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/gen/adapter/factories/modules/utils/SequenceUtils__factory.d.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/gen/adapter/factories/modules/utils/SequenceUtils__factory.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/gen/adapter/factories/modules/utils/index.d.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/gen/adapter/factories/modules/utils/index.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/gen/adapter/factories/modules/utils/libs/RequireFreshSigner__factory.d.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/gen/adapter/factories/modules/utils/libs/RequireFreshSigner__factory.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/gen/adapter/factories/modules/utils/libs/index.d.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/gen/adapter/factories/modules/utils/libs/index.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/gen/adapter/index.d.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/gen/adapter/interfaces/IERC1271Wallet.d.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/gen/adapter/interfaces/IERC1271Wallet.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/gen/adapter/interfaces/index.d.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/gen/adapter/interfaces/index.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/gen/adapter/interfaces/receivers/IERC1155Receiver.d.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/gen/adapter/interfaces/receivers/IERC1155Receiver.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/gen/adapter/interfaces/receivers/IERC223Receiver.d.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/gen/adapter/interfaces/receivers/IERC223Receiver.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/gen/adapter/interfaces/receivers/IERC721Receiver.d.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/gen/adapter/interfaces/receivers/IERC721Receiver.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/gen/adapter/interfaces/receivers/index.d.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/gen/adapter/interfaces/receivers/index.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/gen/adapter/migrations/Migrations.d.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/gen/adapter/migrations/Migrations.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/gen/adapter/migrations/index.d.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/gen/adapter/migrations/index.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/gen/adapter/mocks/CallReceiverMock.d.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/gen/adapter/mocks/CallReceiverMock.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/gen/adapter/mocks/DelegateCallMock.d.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/gen/adapter/mocks/DelegateCallMock.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/gen/adapter/mocks/ERC165CheckerMock.d.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/gen/adapter/mocks/ERC165CheckerMock.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/gen/adapter/mocks/GasBurnerMock.d.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/gen/adapter/mocks/GasBurnerMock.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/gen/adapter/mocks/HookCallerMock.d.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/gen/adapter/mocks/HookCallerMock.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/gen/adapter/mocks/HookMock.d.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/gen/adapter/mocks/HookMock.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/gen/adapter/mocks/LibBytesImpl.d.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/gen/adapter/mocks/LibBytesImpl.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/gen/adapter/mocks/ModuleMock.d.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/gen/adapter/mocks/ModuleMock.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/gen/adapter/mocks/index.d.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/gen/adapter/mocks/index.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/gen/adapter/modules/GuestModule.d.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/gen/adapter/modules/GuestModule.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/gen/adapter/modules/MainModule.d.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/gen/adapter/modules/MainModule.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/gen/adapter/modules/MainModuleGasEstimation.d.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/gen/adapter/modules/MainModuleGasEstimation.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/gen/adapter/modules/MainModuleUpgradable.d.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/gen/adapter/modules/MainModuleUpgradable.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/gen/adapter/modules/commons/ModuleAuth.d.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/gen/adapter/modules/commons/ModuleAuth.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/gen/adapter/modules/commons/ModuleAuthUpgradable.d.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/gen/adapter/modules/commons/ModuleAuthUpgradable.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/gen/adapter/modules/commons/ModuleCalls.d.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/gen/adapter/modules/commons/ModuleCalls.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/gen/adapter/modules/commons/ModuleCreator.d.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/gen/adapter/modules/commons/ModuleCreator.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/gen/adapter/modules/commons/ModuleERC165.d.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/gen/adapter/modules/commons/ModuleERC165.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/gen/adapter/modules/commons/ModuleHooks.d.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/gen/adapter/modules/commons/ModuleHooks.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/gen/adapter/modules/commons/ModuleIgnoreAuthUpgradable.d.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/gen/adapter/modules/commons/ModuleIgnoreAuthUpgradable.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/gen/adapter/modules/commons/ModuleIgnoreNonceCalls.d.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/gen/adapter/modules/commons/ModuleIgnoreNonceCalls.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/gen/adapter/modules/commons/ModuleUpdate.d.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/gen/adapter/modules/commons/ModuleUpdate.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/gen/adapter/modules/commons/index.d.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/gen/adapter/modules/commons/index.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/gen/adapter/modules/commons/interfaces/IModuleAuthUpgradable.d.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/gen/adapter/modules/commons/interfaces/IModuleAuthUpgradable.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/gen/adapter/modules/commons/interfaces/IModuleCalls.d.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/gen/adapter/modules/commons/interfaces/IModuleCalls.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/gen/adapter/modules/commons/interfaces/IModuleCreator.d.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/gen/adapter/modules/commons/interfaces/IModuleCreator.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/gen/adapter/modules/commons/interfaces/IModuleHooks.d.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/gen/adapter/modules/commons/interfaces/IModuleHooks.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/gen/adapter/modules/commons/interfaces/IModuleUpdate.d.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/gen/adapter/modules/commons/interfaces/IModuleUpdate.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/gen/adapter/modules/commons/interfaces/index.d.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/gen/adapter/modules/commons/interfaces/index.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/gen/adapter/modules/index.d.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/gen/adapter/modules/index.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/gen/adapter/modules/utils/GasEstimator.d.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/gen/adapter/modules/utils/GasEstimator.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/gen/adapter/modules/utils/MultiCallUtils.d.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/gen/adapter/modules/utils/MultiCallUtils.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/gen/adapter/modules/utils/RequireUtils.d.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/gen/adapter/modules/utils/RequireUtils.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/gen/adapter/modules/utils/SequenceUtils.d.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/gen/adapter/modules/utils/SequenceUtils.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/gen/adapter/modules/utils/index.d.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/gen/adapter/modules/utils/index.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/gen/adapter/modules/utils/libs/RequireFreshSigner.d.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/gen/adapter/modules/utils/libs/RequireFreshSigner.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/gen/adapter/modules/utils/libs/index.d.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/gen/adapter/modules/utils/libs/index.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/gen/typechain/Factory.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/gen/typechain/common.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/gen/typechain/factories/index.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/gen/typechain/factories/interfaces/index.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/gen/typechain/factories/interfaces/receivers/index.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/gen/typechain/factories/migrations/index.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/gen/typechain/factories/mocks/index.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/gen/typechain/factories/modules/commons/index.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/gen/typechain/factories/modules/commons/interfaces/index.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/gen/typechain/factories/modules/index.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/gen/typechain/factories/modules/utils/index.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/gen/typechain/factories/modules/utils/libs/index.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/gen/typechain/interfaces/IERC1271Wallet.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/gen/typechain/interfaces/index.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/gen/typechain/interfaces/receivers/IERC1155Receiver.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/gen/typechain/interfaces/receivers/IERC223Receiver.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/gen/typechain/interfaces/receivers/IERC721Receiver.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/gen/typechain/interfaces/receivers/index.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/gen/typechain/migrations/Migrations.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/gen/typechain/mocks/CallReceiverMock.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/gen/typechain/mocks/DelegateCallMock.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/gen/typechain/mocks/ERC165CheckerMock.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/gen/typechain/mocks/GasBurnerMock.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/gen/typechain/mocks/HookCallerMock.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/gen/typechain/mocks/HookMock.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/gen/typechain/mocks/LibBytesImpl.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/gen/typechain/mocks/ModuleMock.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/gen/typechain/mocks/index.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/gen/typechain/modules/GuestModule.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/gen/typechain/modules/MainModule.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/gen/typechain/modules/MainModuleGasEstimation.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/gen/typechain/modules/MainModuleUpgradable.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/gen/typechain/modules/commons/ModuleAuth.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/gen/typechain/modules/commons/ModuleAuthUpgradable.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/gen/typechain/modules/commons/ModuleCalls.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/gen/typechain/modules/commons/ModuleCreator.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/gen/typechain/modules/commons/ModuleERC165.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/gen/typechain/modules/commons/ModuleHooks.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/gen/typechain/modules/commons/ModuleIgnoreAuthUpgradable.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/gen/typechain/modules/commons/ModuleIgnoreNonceCalls.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/gen/typechain/modules/commons/ModuleUpdate.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/gen/typechain/modules/commons/index.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/gen/typechain/modules/commons/interfaces/IModuleAuthUpgradable.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/gen/typechain/modules/commons/interfaces/IModuleCalls.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/gen/typechain/modules/commons/interfaces/IModuleCreator.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/gen/typechain/modules/commons/interfaces/IModuleHooks.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/gen/typechain/modules/commons/interfaces/IModuleUpdate.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/gen/typechain/modules/commons/interfaces/index.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/gen/typechain/modules/index.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/gen/typechain/modules/utils/GasEstimator.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/gen/typechain/modules/utils/MultiCallUtils.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/gen/typechain/modules/utils/RequireUtils.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/gen/typechain/modules/utils/SequenceUtils.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/gen/typechain/modules/utils/index.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/gen/typechain/modules/utils/libs/RequireFreshSigner.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/gen/typechain/modules/utils/libs/index.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/networks/avalanche.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/networks/avalancheTestnet.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/networks/nova.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/networks/optimism.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/tsconfig.adapter.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/utils/config-loader.ts" beforeDir="false" afterPath="$PROJECT_DIR$/utils/config-loader.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/utils/deploy-contracts.ts" beforeDir="false" afterPath="$PROJECT_DIR$/utils/deploy-contracts.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/yarn.lock" beforeDir="false" afterPath="$PROJECT_DIR$/yarn.lock" afterDir="false" />
-    </list>
+    <list default="true" id="9baafcda-9252-411c-9771-d79555b1d032" name="Changes" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -274,10 +15,33 @@
   </component>
   <component name="CopilotPersistence">
     <persistenceIdMap>
-      <entry key="_C:/Users/Legion/projects/wallet-contracts" value="3AhIF5ocYPDZcdeGQ0E5cEa35yu" />
+      <entry key="_C:/Users/Legion/projects/wallet-contracts" value="3ATSc6vS0rsn0MmUb2DxfrqKYf9" />
     </persistenceIdMap>
   </component>
   <component name="Git.Settings">
+    <favorite-branches>
+      <branch-storage>
+        <map>
+          <entry type="LOCAL">
+            <value>
+              <list>
+                <branch-info repo="$PROJECT_DIR$" source="wallet-contracts" />
+                <branch-info repo="$PROJECT_DIR$" source="0x" />
+              </list>
+            </value>
+          </entry>
+          <entry type="REMOTE">
+            <value>
+              <list>
+                <branch-info repo="$PROJECT_DIR$/lib/forge-std/lib/ds-test" source="origin/assertNeq" />
+                <branch-info repo="$PROJECT_DIR$/lib/forge-std/lib/ds-test" source="origin/dappnix" />
+                <branch-info repo="$PROJECT_DIR$/lib/forge-std/lib/ds-test" source="origin/windows-compat" />
+              </list>
+            </value>
+          </entry>
+        </map>
+      </branch-storage>
+    </favorite-branches>
     <option name="PUSH_TAGS">
       <GitPushTagMode>
         <option name="argument" value="--tags" />
@@ -285,33 +49,48 @@
       </GitPushTagMode>
     </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+    <option name="RESET_MODE" value="MIXED" />
     <option name="ROOT_SYNC" value="DONT_SYNC" />
+    <option name="SWAP_SIDES_IN_COMPARE_BRANCHES" value="true" />
   </component>
-  <component name="GitHubPullRequestSearchHistory"><![CDATA[{
-  "lastFilter": {}
-}]]></component>
-  <component name="GitHubPullRequestState"><![CDATA[{
-  "prStates": [
+  <component name="GitHubPullRequestSearchHistory">{
+  &quot;lastFilter&quot;: {
+    &quot;state&quot;: &quot;OPEN&quot;,
+    &quot;assignee&quot;: &quot;Dargon789&quot;
+  }
+}</component>
+  <component name="GitHubPullRequestState">{
+  &quot;prStates&quot;: [
     {
-      "id": {
-        "id": "PR_kwDOKckCgs7I6yS6",
-        "number": 12
+      &quot;id&quot;: {
+        &quot;id&quot;: &quot;PR_kwDOQaDCYs7Iz3Du&quot;,
+        &quot;number&quot;: 87
       },
-      "lastSeen": 1773039638510
+      &quot;lastSeen&quot;: 1772971457867
     }
   ]
-}]]></component>
-  <component name="GithubPullRequestsUISettings"><![CDATA[{
-  "selectedUrlAndAccountId": {
-    "url": "https://github.com/0xETHengineer/wallet-contracts.git",
-    "accountId": "2ff7ee47-6303-45e4-a087-be5e53cf014c"
+}</component>
+  <component name="GithubPullRequestsUISettings">{
+  &quot;selectedUrlAndAccountId&quot;: {
+    &quot;url&quot;: &quot;https://github.com/Dargon789/wallet-contracts.git&quot;,
+    &quot;accountId&quot;: &quot;2ff7ee47-6303-45e4-a087-be5e53cf014c&quot;
   }
-}]]></component>
-  <component name="ProjectColorInfo"><![CDATA[{
-  "customColor": "",
-  "associatedIndex": 4
-}]]></component>
-  <component name="ProjectId" id="3AhIF5ocYPDZcdeGQ0E5cEa35yu" />
+}</component>
+  <component name="HighlightingSettingsPerFile">
+    <setting file="file://$PROJECT_DIR$/.github/ISSUE_TEMPLATE/bug_report.md" root0="FORCE_HIGHLIGHTING" root1="SKIP_HIGHLIGHTING" />
+  </component>
+  <component name="ProblemsViewState">
+    <option name="groupByToolId" value="true" />
+    <option name="selectedTabId" value="ProjectErrors" />
+    <option name="sortByName" value="true" />
+  </component>
+  <component name="ProjectCodeStyleSettingsMigration">
+    <option name="version" value="2" />
+  </component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 4
+}</component>
+  <component name="ProjectId" id="3ATSc6vS0rsn0MmUb2DxfrqKYf9" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
@@ -319,32 +98,47 @@
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
     "ASKED_SHARE_PROJECT_CONFIGURATION_FILES": "true",
+    "ModuleVcsDetector.initialDetectionPerformed": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
     "RunOnceActivity.cidr.known.project.marker": "true",
-    "RunOnceActivity.git.unshallow": "true",
     "RunOnceActivity.readMode.enableVisualFormatting": "true",
-    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
     "cf.first.check.clang-format": "false",
     "cidr.known.project.marker": "true",
     "dart.analysis.tool.window.visible": "false",
-    "git-widget-placeholder": "Merging Replace-with-arbitrum-goerli",
-    "ignore.virus.scanning.warn.message": "true",
     "kotlin-language-version-configured": "true",
-    "settings.editor.selected.configurable": "preferences.pluginManager",
+    "last_opened_file_path": "C:/Users/Legion/projects/wallet-contracts",
+    "run.code.analysis.last.selected.profile": "pProject Default",
+    "settings.editor.selected.configurable": "com.android.studio.ml.bot.mainConfigurable",
     "show.migrate.to.gradle.popup": "false"
   }
 }]]></component>
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
-      <changelist id="31e8ee03-bf35-492b-9dc2-a141fbde443e" name="Changes" comment="" />
-      <created>1773038274031</created>
+      <changelist id="6928f018-34c2-4fe3-b2a9-540996fdbfb5" name="Changes" comment="" />
+      <created>1772615152628</created>
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
-      <updated>1773038274031</updated>
+      <updated>1772615152628</updated>
     </task>
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
+    <option name="RECENT_FILTERS">
+      <map>
+        <entry key="Branch">
+          <value>
+            <list>
+              <RecentGroup>
+                <option name="FILTER_VALUES">
+                  <option value="main" />
+                </option>
+              </RecentGroup>
+            </list>
+          </value>
+        </entry>
+      </map>
+    </option>
     <option name="TAB_STATES">
       <map>
         <entry key="MAIN">
@@ -355,7 +149,7 @@
                   <entry key="branch">
                     <value>
                       <list>
-                        <option value="Replace-with-arbitrum-goerli" />
+                        <option value="main" />
                       </list>
                     </value>
                   </entry>
@@ -366,11 +160,6 @@
         </entry>
       </map>
     </option>
-  </component>
-  <component name="VcsManagerConfiguration">
-    <MESSAGE value="Per-transaction estimated gas usage and execution results&#10;#101" />
-    <option name="LAST_COMMIT_MESSAGE" value="Per-transaction estimated gas usage and execution results&#10;#101" />
-    <option name="GROUP_MULTIFILE_MERGE_BY_DIRECTORY" value="true" />
   </component>
   <component name="github-copilot-workspace">
     <instructionFileLocations>
