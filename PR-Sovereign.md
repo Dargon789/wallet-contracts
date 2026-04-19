@@ -308,6 +308,7 @@ pnpm install
 pnpm test
 pnpm coverage
 pnpm deploy
+
 **Common token functionality**, such as the `ERC2981-Controlled` contract which provides a way to handle royalties in NFTs.
 
 **Proxy** contracts and factories implementing ERC-1967 and with upgradeability.

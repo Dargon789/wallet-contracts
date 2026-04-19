@@ -78,8 +78,8 @@ export async function init(options: Init = {}) {
 
       /** @type {import('@wagmi/cli').Config} */
       export default ${JSON.stringify(config, null, 2).replace(
-        /"(\d*)":/gm,
-        '$1:',
+        /^(\s*)"(\d+)":/gm,
+        '$1$2:',
       )}
     `)
   }
