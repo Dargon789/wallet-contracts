@@ -125,6 +125,46 @@ jobs:
           mkdir -p "$ARTIFACT_DIR"
           ls -la "$ARTIFACT_DIR" || true
 
+      - name: Validate workflow_run trust before downloading artifacts
+        if: ${{ github.event_name == 'workflow_run' }}
+        run: |
+          set -euo pipefail
+
+          if [[ "${{ github.event.workflow_run.conclusion }}" != "success" ]]; then
+            echo "ERROR: Refusing to use artifacts from non-success workflow_run conclusion: ${{ github.event.workflow_run.conclusion }}" >&2
+            exit 1
+          fi
+
+          if [[ "${{ github.event.workflow_run.head_repository.full_name }}" != "${{ github.repository }}" ]]; then
+            echo "ERROR: Refusing to use artifacts from external repository: ${{ github.event.workflow_run.head_repository.full_name }}" >&2
+            exit 1
+          fi
+
+      - name: Resolve trusted run id for artifact download
+        id: trusted-run
+        run: |
+          set -euo pipefail
+
+          if [[ "${{ github.event_name }}" == "workflow_run" ]]; then
+            RUN_ID="${{ github.event.workflow_run.id }}"
+          elif [[ "${{ github.event_name }}" == "workflow_dispatch" ]]; then
+            RUN_ID="${{ inputs.run_id }}"
+            if [[ -z "${RUN_ID}" ]]; then
+              echo "ERROR: workflow_dispatch requires inputs.run_id to be set." >&2
+              exit 1
+            fi
+          else
+            echo "ERROR: Unsupported event for artifact download: ${{ github.event_name }}" >&2
+            exit 1
+          fi
+
+          if [[ ! "$RUN_ID" =~ ^[0-9]+$ ]]; then
+            echo "ERROR: Invalid run id: $RUN_ID" >&2
+            exit 1
+          fi
+
+          printf 'run_id=%s\n' "$RUN_ID" >> "$GITHUB_OUTPUT"
+
       - name: Download Release Assets
         uses: actions/download-artifact@v7
         with:
@@ -133,7 +173,7 @@ jobs:
           # Extract artifacts into an isolated temp directory, not the workspace
           path: ${{ steps.paths.outputs.artifact_dir }}
           github-token: ${{ secrets.GITHUB_TOKEN }}
-          run-id: ${{ github.event.workflow_run.id }}
+          run-id: ${{ steps.trusted-run.outputs.run_id }}
 
       - name: Validate Downloaded Artifacts
         env:
@@ -147,6 +187,84 @@ jobs:
             echo "ERROR: ARTIFACT_DIR is not set" >&2
             exit 1
           fi
+
+          if [[ ! -d "$ARTIFACT_DIR" ]]; then
+            echo "ERROR: ARTIFACT_DIR does not exist or is not a directory: $ARTIFACT_DIR" >&2
+            exit 1
+          fi
+
+          echo "Listing contents of ARTIFACT_DIR:"
+          ls -la "$ARTIFACT_DIR" || true
+
+          # Ensure there is at least one file in the artifact directory
+          if ! find "$ARTIFACT_DIR" -type f -mindepth 1 -print -quit | grep -q .; then
+            echo "ERROR: No files found in ARTIFACT_DIR; expected downloaded artifacts" >&2
+            exit 1
+          fi
+
+          # Reject any symlinks inside the artifact directory to avoid path hijacking
+          if find "$ARTIFACT_DIR" -type l -print -quit | grep -q .; then
+            echo "ERROR: Symlinks found in ARTIFACT_DIR; refusing to proceed" >&2
+            find "$ARTIFACT_DIR" -type l -ls >&2 || true
+            exit 1
+          fi
+
+          # Ensure no absolute or parent-traversal paths exist (defensive, for extracted archives)
+          while IFS= read -r -d '' f; do
+            rel_path="${f#"$ARTIFACT_DIR"/}"
+            case "$rel_path" in
+              /*|*../* )
+                echo "ERROR: Invalid path in artifact contents: $rel_path" >&2
+                exit 1
+                ;;
+            esac
+          done < <(find "$ARTIFACT_DIR" -print0)
+
+          # Allow only expected file types/extensions (adjust as needed for project)
+          allowed_ext_regex='\.\(tar\.gz\|tgz\|zip\|json\|txt\)$'
+          while IFS= read -r -d '' f; do
+            # Skip directories
+            if [[ -d "$f" ]]; then
+              continue
+            fi
+            basename="$(basename -- "$f")"
+            if ! printf '%s\n' "$basename" | grep -Eq "$allowed_ext_regex"; then
+              echo "ERROR: Unexpected artifact file name or extension: $basename" >&2
+              exit 1
+            fi
+          done < <(find "$ARTIFACT_DIR" -type f -print0)
+
+          echo "Artifact validation passed."
+
+          # Ensure ARTIFACT_DIR is exactly the isolated directory we created earlier
+          EXPECTED_ARTIFACT_ROOT="${RUNNER_TEMP%/}/foundry_artifacts"
+          ABS_ARTIFACT_DIR="$(realpath "$ARTIFACT_DIR")"
+          ABS_EXPECTED_ARTIFACT_ROOT="$(realpath "$EXPECTED_ARTIFACT_ROOT")"
+          if [[ "$ABS_ARTIFACT_DIR" != "$ABS_EXPECTED_ARTIFACT_ROOT" ]]; then
+            echo "ERROR: ARTIFACT_DIR ($ABS_ARTIFACT_DIR) does not match expected isolated artifact root ($ABS_EXPECTED_ARTIFACT_ROOT); refusing to use downloaded artifacts." >&2
+            exit 1
+          fi
+
+          # Perform a basic integrity check on downloaded artifacts: only allow regular files/directories,
+          # and ensure any package.json present is a regular file (not a symlink).
+          shopt -s nullglob
+          for entry in "$ARTIFACT_DIR"/*; do
+            if [[ -L "$entry" ]]; then
+              echo "ERROR: Symlink found in artifact directory: $entry; refusing to use potentially poisoned artifact." >&2
+              exit 1
+            fi
+
+            if [[ -d "$entry" ]]; then
+              for pkg in "$entry"/package.json; do
+                if [[ -e "$pkg" && ! -f "$pkg" ]]; then
+                  echo "ERROR: package.json in artifact is not a regular file: $pkg; refusing to use potentially poisoned artifact." >&2
+                  exit 1
+                fi
+              done
+            fi
+          done
+
+          echo "Artifact directory structure and basic integrity checks passed."
 
           # Ensure ARTIFACT_DIR is under the runner temp directory to avoid clobbering workspace files
           case "$ARTIFACT_DIR" in
@@ -388,6 +506,47 @@ jobs:
           fi
 
           echo "Found matching artifact file(s) for ${TOOL}-${PLATFORM}-${ARCH}"
+
+      - name: Validate Artifacts For Matrix
+        working-directory: ./npm
+        env:
+          ARTIFACT_DIR: ${{ steps.paths.outputs.artifact_dir }}
+        run: |
+          set -euo pipefail
+
+          if [[ -z "${ARTIFACT_DIR:-}" ]]; then
+            echo "ERROR: ARTIFACT_DIR is not set" >&2
+            exit 1
+          fi
+
+          # Ensure ARTIFACT_DIR is under the runner temp directory
+          case "$ARTIFACT_DIR" in
+            "$RUNNER_TEMP"/*) ;;
+            *)
+              echo "ERROR: ARTIFACT_DIR ($ARTIFACT_DIR) is not under RUNNER_TEMP ($RUNNER_TEMP)" >&2
+              exit 1
+              ;;
+          esac
+
+          if [[ ! -d "$ARTIFACT_DIR" ]]; then
+            echo "ERROR: ARTIFACT_DIR does not exist or is not a directory: $ARTIFACT_DIR" >&2
+            exit 1
+          fi
+
+          echo "Listing artifacts in $ARTIFACT_DIR for tool='${{ matrix.tool }}' platform='${{ matrix.os }}' arch='${{ matrix.arch }}'"
+          find "$ARTIFACT_DIR" -maxdepth 3 -type f -print
+
+          # Basic path traversal protection: disallow entries containing '..' components
+          if find "$ARTIFACT_DIR" -maxdepth 10 -print | grep -E '/\.\./' >/dev/null; then
+            echo "ERROR: Found artifact paths containing '..' components in $ARTIFACT_DIR" >&2
+            exit 1
+          fi
+
+          # Require at least one file to be present
+          if ! find "$ARTIFACT_DIR" -type f -maxdepth 10 | read -r _; then
+            echo "ERROR: No files found in ARTIFACT_DIR: $ARTIFACT_DIR" >&2
+            exit 1
+          fi
 
       - name: Stage Binary Into Package
         working-directory: ./npm
