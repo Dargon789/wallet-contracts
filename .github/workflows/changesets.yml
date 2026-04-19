@@ -1,8 +1,8 @@
 name: Changesets
 on:
   push:
-    branches: 
-        - main
+    branches: [main]
+
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
@@ -37,7 +37,7 @@ jobs:
       - name: Install dependencies
         uses: wevm/actions/.github/actions/pnpm@main
         with:
-          node-version: 20.12
+          node-version: 24.5
 
       - name: PR or publish
         uses: changesets/action@e0145edc7d9d8679003495b11f87bd8ef63c0cba
@@ -52,7 +52,7 @@ jobs:
 
       - name: Publish prerelease
         if: steps.changesets.outputs.published != 'true'
-        continue-on-error: false
+        continue-on-error: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
