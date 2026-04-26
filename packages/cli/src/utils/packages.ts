@@ -47,6 +47,7 @@ export async function getPackageManager(executable?: boolean | undefined) {
 
   const packageManager = await detect()
   if (packageManager === 'npm' && executable) return 'npx'
+  if (packageManager === 'bun' && executable) return 'bunx'
   return packageManager
 }
 
