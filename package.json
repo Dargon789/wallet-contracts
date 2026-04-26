@@ -44,7 +44,7 @@
     "@biomejs/biome": "^2.2.4",
     "@changesets/cli": "^3.0.0-next.0",
     "@svitejs/changesets-changelog-github-compact": "^1.2.0",
-    "@types/node": "^24.5.1",
+    "@types/node": "^22.0.0",
     "@vitejs/plugin-react": "catalog:",
     "@vitest/browser": "^4.0.16",
     "@vitest/browser-playwright": "^4.0.16",
