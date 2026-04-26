@@ -10,7 +10,7 @@
   },
   "dependencies": {
     "@tanstack/react-query": "latest",
-    "@vercel/analytics": "latest",
+    "@vercel/analytics": "^1.6.1",
     "next": "latest",
     "react": "latest",
     "react-dom": "latest",
