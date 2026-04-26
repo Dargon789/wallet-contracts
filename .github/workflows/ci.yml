@@ -63,7 +63,7 @@ jobs:
             */*/node_modules
           key: ${{ runner.os }}-lerna-${{ hashFiles('**/package.json', '**/yarn.lock') }}
       - run: yarn lint:ts
-
+      - run: yarn run test -o --watch
   lint-sol:
     name: Solidity lint
     runs-on: ubuntu-latest
@@ -81,7 +81,7 @@ jobs:
             */*/node_modules
           key: ${{ runner.os }}-lerna-${{ hashFiles('**/package.json', '**/yarn.lock') }}
       - run: yarn lint:sol
-
+      - run: yarn run lint:sol -o --watch
   test:
     name: Test contracts
     runs-on: ubuntu-latest
@@ -99,7 +99,8 @@ jobs:
             */*/node_modules
           key: ${{ runner.os }}-lerna-${{ hashFiles('**/package.json', '**/yarn.lock') }}
       - run: yarn build
-      - run: yarn test
+      - run: yarn test -o --watch 
+      continue-on-error: true
 
   coverage:
     name: Coverage

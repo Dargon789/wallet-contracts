@@ -3,7 +3,6 @@ import type { EnhanceAppContext, Theme } from 'vitepress'
 import DefaultTheme from 'vitepress/theme'
 // https://vitepress.dev/guide/custom-theme
 import { h } from 'vue'
-import { inject } from '@vercel/analytics'
 
 import 'virtual:uno.css'
 import 'virtual:group-icons.css'
@@ -28,6 +27,5 @@ export default {
   },
   enhanceApp({ app }: EnhanceAppContext) {
     app.use(TwoslashFloatingVue)
-    inject()
   },
 } satisfies Theme
