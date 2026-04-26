@@ -32,5 +32,5 @@ export function uid(length = 11) {
       buffer += hex
     }
   }
-  return buffer.substring(index, index++ + length)
+  return buffer.substring(index, (index += length))
 }
