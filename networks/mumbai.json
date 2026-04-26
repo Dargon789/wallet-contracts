@@ -1,22 +1,22 @@
 [
   {
     "contractName": "WalletFactory",
-    "address": "0xFaA5c0b14d1bED5C888Ca655B9a8A5911F78eF4A"
+    "address": "0x0D7604Bdf2cAcc2943b6388e1c26c3C33213f673"
   },
   {
     "contractName": "MainModule",
-    "address": "0xfBf8f1A5E00034762D928f46d438B947f5d4065d"
+    "address": "0xA507eF52f3fd34dd54566bf3055fA66bdabE2ef3"
   },
   {
     "contractName": "MainModuleUpgradable",
-    "address": "0x4222dcA3974E39A8b41c411FeDDE9b09Ae14b911"
+    "address": "0x13Cc7b579e1acfDc8aD1F9996dd38ff744818a34"
   },
   {
     "contractName": "GuestModule",
-    "address": "0xfea230Ee243f88BC698dD8f1aE93F8301B6cdfaE"
+    "address": "0xCcB6cA914c20fAde6F2be5827eE40d899076ac2A"
   },
   {
     "contractName": "SequenceUtils",
-    "address": "0xdbbFa3cB3B087B64F4ef5E3D20Dda2488AA244e6"
+    "address": "0xD7042Bf5C8Cc253301B01D7143166E17D5BF4f74"
   }
 ]
