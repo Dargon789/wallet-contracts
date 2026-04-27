@@ -4,4 +4,3 @@
 
 Please note, Sequence Wallet was formerly known as "Arcadeum Wallet". Any references of "Arcadeum"
 are synonymous with "Sequence", and this repository.
-

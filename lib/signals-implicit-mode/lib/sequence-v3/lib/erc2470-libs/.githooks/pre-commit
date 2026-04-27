@@ -1,0 +1,30 @@
+#!/bin/sh
+#
+# Custom pre-commit hook to run Solhint on staged Solidity files
+
+old_stash=$(git rev-parse -q --verify refs/stash)
+git stash push -q --keep-index
+new_stash=$(git rev-parse -q --verify refs/stash)
+
+# If there were no changes (e.g., `--amend` or `--allow-empty`)
+# then nothing was stashed, and we should skip everything.
+if [ "$old_stash" = "$new_stash" ]; then
+    exit 0
+fi
+
+# Run Solhint on all staged .sol files
+SOL_FILES=$(git diff --cached --name-only --diff-filter=ACM | grep ".sol$")
+status=0
+if [ -n "$var" ]; then
+	npx solhint $SOL_FILES
+	status=$?
+fi
+
+# Restore changes
+git reset --hard -q && git stash apply --index -q && git stash drop -q
+
+# Exit with status from test-run: nonzero prevents commit
+if [ $status -ne 0 ]; then
+		echo "Solhint failed. Please fix errors and try again."
+fi
+exit $status
