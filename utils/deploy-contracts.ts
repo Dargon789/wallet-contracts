@@ -77,10 +77,11 @@ const deploy = async <T extends simpleContractFactory<Y>, Y extends Array<any>>(
 ): Promise<ethers.Contract> => {
   const singletonFactory = new ethers.Contract(singletonFactoryFactory.address, singletonFactoryFactory.abi, signer)
 
-  if (ethers.utils.arrayify(await provider.getCode(singletonFactory.address)).length <= 2) {
+  const singletonFactoryCode = await provider.getCode(singletonFactory.address)
+  if (!singletonFactoryCode || singletonFactoryCode === '0x' || singletonFactoryCode === '0x0') {
     // Deploy singleton deployer
     const o = ora().start(`Deploying singleton factory`)
-    const deployerBal = BigNumber.from('24700000000000000')
+    const deployerBal = ethers.utils.parseEther('0.0247')
     if ((await provider.getBalance(singletonFactoryDeployer)).lt(deployerBal)) {
       o.info('Funding singleton factory deployer')
       const tx = await signer.sendTransaction({
