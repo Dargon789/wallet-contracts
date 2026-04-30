@@ -29,7 +29,7 @@ const ReadGapNonceHookArtifact = artifacts.require('ReadGapNonceHook')
 import { web3 } from 'hardhat'
 
 contract('Session utils', () => {
-  const SessionSpace = ethers.BigNumber.from("0x96f7fef04d2478e2b011c3aca79dc5a83b5d37ef")
+  const SessionSpace = ethers.BigNumber.from("861879107978547650890364157709704413515112855535")
 
   let factory: Factory
 

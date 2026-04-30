@@ -19,16 +19,17 @@ contract SessionUtils is GapNonceUtils, NonceResetUtils {
    * @param _nonce The gap nonce of the transaction.
    */
   function requireSessionNonce(uint256 _nonce) external {
-    // Should support AuthModuleUpgradable, otherwise the wallet wasn't upgraded
-    require(
-      ModuleERC165(address(this)).supportsInterface(type(IModuleAuthUpgradable).interfaceId),
-      "SessionUtils#requireSessionNonce: WALLET_NOT_UPGRADED"
-    );
-
     // Require gap nonce
     _requireGapNonce(SESSION_SPACE, _nonce);
 
     // Reset regular nonce
     _resetNonce(SESSION_SPACE);
+  
+    // Should support AuthModuleUpgradable
+    // otherwise the wallet wasn't upgraded
+    require(
+      ModuleERC165(address(this)).supportsInterface(type(IModuleAuthUpgradable).interfaceId),
+      "SessionUtils#requireSessionNonce: WALLET_NOT_UPGRADED"
+    );
   }
 }
