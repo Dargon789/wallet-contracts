@@ -4,6 +4,9 @@ name: ci
 permissions:
   contents: read
 
+permissions:
+  contents: read
+
 jobs:
   install:
     name: Install dependencies
