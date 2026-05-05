@@ -17,10 +17,6 @@ abstract contract ModuleAuthImp is IModuleAuth {
     return imageHashToIsValid[_imageHash];
   }
 
-  function updateImageHash(bytes32) external override virtual {
-    revert('not implemented');
-  }
-
   function signatureValidation(
     bytes32 _digest,
     bytes calldata _signature
@@ -39,6 +35,10 @@ contract ModuleStaticAuthImp is ModuleAuthImp, ModuleStaticAuth {
   ) view returns (bool) {
     return super._isValidImage(_imageHash);
   }
+
+  function _updateImageHash(bytes32) internal override virtual {
+    revert('not implemented');
+  }
 }
 
 contract ModuleStaticAuthTest is AdvTest {
@@ -54,7 +54,7 @@ contract ModuleStaticAuthTest is AdvTest {
   function _buildSignature(
     bytes32[] calldata _witnesses
   ) internal returns (bytes memory) {
-    return _buildSignatureWithPrefix(hex'0000', _witnesses);
+    return _buildSignatureWithPrefix(hex'000000000000', _witnesses);
   }
 
   function _buildSignatureWithPrefix(
@@ -99,8 +99,9 @@ contract ModuleStaticAuthTest is AdvTest {
     assertTrue(isValid);
     assertEq(resSubdigest, staticSubdigest);
 
-    bytes memory belowThersholdSignature = _buildSignatureWithPrefix(hex'00ff', _signatureWitnesses);
-    (isValid, resSubdigest) = imp.signatureValidation(_digest, belowThersholdSignature);
+    bytes memory belowThresholdSignature = _buildSignatureWithPrefix(hex'00ff703708f3', _signatureWitnesses);
+    (isValid, resSubdigest) = imp.signatureValidation(_digest, belowThresholdSignature);
+
     assertTrue(isValid);
     assertEq(resSubdigest, staticSubdigest);
   }
@@ -141,8 +142,9 @@ contract ModuleStaticAuthTest is AdvTest {
       assertTrue(isValid);
       assertEq(resSubdigest, staticSubdigest);
 
-      bytes memory belowThersholdSignature = _buildSignatureWithPrefix(hex'00ff', _signatureWitnesses);
-      (isValid, resSubdigest) = imp.signatureValidation(digest, belowThersholdSignature);
+      bytes memory belowThresholdSignature = _buildSignatureWithPrefix(hex'00ff703708f3', _signatureWitnesses);
+      (isValid, resSubdigest) = imp.signatureValidation(digest, belowThresholdSignature);
+
       assertTrue(isValid);
       assertEq(resSubdigest, staticSubdigest);
     }
@@ -197,8 +199,8 @@ contract ModuleStaticAuthTest is AdvTest {
     assertFalse(isValid);
     assertEq(resSubdigest, subDigest1);
 
-    bytes memory belowThersholdSignature = _buildSignatureWithPrefix(hex'00ff', _signatureWitnesses);
-    (isValid, resSubdigest) = imp.signatureValidation(_set1, belowThersholdSignature);
+    bytes memory belowThresholdSignature = _buildSignatureWithPrefix(hex'00ff703708f3', _signatureWitnesses);
+    (isValid, resSubdigest) = imp.signatureValidation(_set1, belowThresholdSignature);
     assertFalse(isValid);
     assertEq(resSubdigest, subDigest1);
 
@@ -206,7 +208,7 @@ contract ModuleStaticAuthTest is AdvTest {
     assertEq(isValid, _set1 != _set2);
     assertEq(resSubdigest, _set1 != _set2 ? staticSubdigest2 : subDigest1);
 
-    (isValid, resSubdigest) = imp.signatureValidation(_set2, belowThersholdSignature);
+    (isValid, resSubdigest) = imp.signatureValidation(_set2, belowThresholdSignature);
     assertEq(isValid, _set1 != _set2);
     assertEq(resSubdigest, _set1 != _set2 ? staticSubdigest2 : subDigest1);
   }
