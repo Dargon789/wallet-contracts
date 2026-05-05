@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: Apache-2.0
-pragma solidity 0.8.17;
+pragma solidity 0.8.18;
 
 import "./ModuleSelfAuth.sol";
 import "./ModuleStorage.sol";
@@ -34,6 +34,10 @@ contract ModuleIPFS is ModuleSelfAuth {
   }
 
   function updateIPFSRoot(bytes32 _hash) external onlySelf {
+    _updateIPFSRoot(_hash);
+  }
+
+  function _updateIPFSRoot(bytes32 _hash) internal {
     ModuleStorage.writeBytes32(IPFS_ROOT_KEY, _hash);
     emit IPFSRootUpdated(_hash);
   }

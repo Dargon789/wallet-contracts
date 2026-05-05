@@ -1,8 +1,7 @@
 // SPDX-License-Identifier: Apache-2.0
-pragma solidity 0.8.17;
+pragma solidity 0.8.18;
 
 import "./SequenceBaseSig.sol";
-import "./SequenceNoChainIdSig.sol";
 
 import "../../interfaces/IModuleAuth.sol";
 
@@ -10,38 +9,47 @@ import "../../ModuleSelfAuth.sol";
 import "../../ModuleStorage.sol";
 
 import "../../../../utils/LibBytesPointer.sol";
+import "../../../../utils/LibOptim.sol";
 
-
+/**
+ * @title Sequence chained auth recovery submodule
+ * @author Agustin Aguilar (aa@horizon.io)
+ * @notice Defines Sequence signatures that work by delegating control to new configurations.
+ * @dev The delegations can be chained together, the first signature is the one that is used to validate
+ *      the message, the last signature must match the current on-chain configuration of the wallet.
+ */
 abstract contract SequenceChainedSig is IModuleAuth, ModuleSelfAuth {
   using LibBytesPointer for bytes;
 
-  bytes32 public constant SET_IMAGEHASH_TYPEHASH = keccak256("SetImagehash(bytes32 imageHash,uint256 checkpoint)");
-  bytes32 internal constant LAST_AUTH_CHECKPOINT_KEY = keccak256("org.sequence.module.auth.submodule.prefixed.last.auth.checkpoint");
-
-  event SetLastCheckpoint(uint256 _checkpoint);
+  bytes32 public constant SET_IMAGE_HASH_TYPE_HASH = keccak256("SetImageHash(bytes32 imageHash)");
 
   error LowWeightChainedSignature(bytes _signature, uint256 threshold, uint256 _weight);
   error WrongChainedCheckpointOrder(uint256 _current, uint256 _prev);
-  error WrongFinalCheckpoint(uint256 _checkpoint, uint256 _current);
 
-  function _hashSetImagehashStruct(bytes32 _imageHash, uint256 _checkpoint) internal pure returns (bytes32) {
-    return keccak256(abi.encode(SET_IMAGEHASH_TYPEHASH, _imageHash, _checkpoint));
+  /**
+   * @notice Defined the special token that must be signed to delegate control to a new configuration.
+   * @param _imageHash The hash of the new configuration.
+   * @return bytes32 The message hash to be signed.
+   */
+  function _hashSetImageHashStruct(bytes32 _imageHash) internal pure returns (bytes32) {
+    return LibOptim.fkeccak256(SET_IMAGE_HASH_TYPE_HASH, _imageHash);
   }
 
-  function setLastAuthCheckpoint(uint256 _checkpoint) external onlySelf {
-    ModuleStorage.writeBytes32(LAST_AUTH_CHECKPOINT_KEY, bytes32(_checkpoint));
-    emit SetLastCheckpoint(_checkpoint);
-  }
-
-  function getLastAuthCheckpoint() public view returns (uint256) {
-    return uint256(ModuleStorage.readBytes32(LAST_AUTH_CHECKPOINT_KEY));
-  }
-
-  struct SetImagehashStruct {
-    uint256 checkpoint;
-    bytes signature;
-  }
-
+  /**
+   * @notice Returns the threshold, weight, root, and checkpoint of a (chained) signature.
+   * 
+   * @dev This method return the `threshold`, `weight` and `imageHash` of the last signature in the chain.
+   *      Intermediate signatures are validated directly in this method. The `subdigest` is the one of the
+   *      first signature in the chain (since that's the one that is used to validate the message).
+   *
+   * @param _digest The digest to recover the signature from.
+   * @param _signature The signature to recover.
+   * @return threshold The threshold of the (last) signature.
+   * @return weight The weight of the (last) signature.
+   * @return imageHash The image hash of the (last) signature.
+   * @return subdigest The subdigest of the (first) signature in the chain.
+   * @return checkpoint The checkpoint of the (last) signature.
+   */
   function chainedRecover(
     bytes32 _digest,
     bytes calldata _signature
@@ -49,7 +57,8 @@ abstract contract SequenceChainedSig is IModuleAuth, ModuleSelfAuth {
     uint256 threshold,
     uint256 weight,
     bytes32 imageHash,
-    bytes32 subDigest
+    bytes32 subdigest,
+    uint256 checkpoint
   ) {
     uint256 rindex = 1;
     uint256 sigSize;
@@ -66,7 +75,8 @@ abstract contract SequenceChainedSig is IModuleAuth, ModuleSelfAuth {
       threshold,
       weight,
       imageHash,
-      subDigest
+      subdigest,
+      checkpoint
     ) = signatureRecovery(
       _digest,
       _signature[rindex:nrindex]
@@ -78,35 +88,25 @@ abstract contract SequenceChainedSig is IModuleAuth, ModuleSelfAuth {
 
     rindex = nrindex;
 
-    uint256 prevCheckpoint = type(uint256).max;
-
-    //
-    // Afterward signatures are handled by this loop
-    // this is done this way because the last signature does not have a
-    // checkpoint
-    //
+    // The following signatures are handled by this loop.
+    // This is done this way because the first signature does not have a
+    // checkpoint to be validated against.
     while (rindex < _signature.length) {
-      // Next uint64 is the checkpoint
-      // (this won't exist on the last signature)
-      uint256 checkpoint; (checkpoint, rindex) = _signature.readUint64(rindex);
-      if (checkpoint >= prevCheckpoint) {
-        revert WrongChainedCheckpointOrder(checkpoint, prevCheckpoint);
-      }
-
-      prevCheckpoint = checkpoint;
-
       // First uint24 is the size of the signature
       (sigSize, rindex) = _signature.readUint24(rindex);
       nrindex = sigSize + rindex;
 
+      uint256 nextCheckpoint;
+
       (
         threshold,
         weight,
-        imageHash,
-        // Don't change the subdigest
-        // it should remain the first signature
+        imageHash,,
+        // Do not change the subdigest;
+        // it should remain that of the first signature.
+        nextCheckpoint
       ) = signatureRecovery(
-        _hashSetImagehashStruct(imageHash, checkpoint),
+        _hashSetImageHashStruct(imageHash),
         _signature[rindex:nrindex]
       );
 
@@ -115,11 +115,15 @@ abstract contract SequenceChainedSig is IModuleAuth, ModuleSelfAuth {
         revert LowWeightChainedSignature(_signature[rindex:nrindex], threshold, weight);
       }
 
-      rindex = nrindex;
-    }
+      // Checkpoints must be provided in descending order
+      // since the first signature is the one that is used to validate the message
+      // and the last signature is the one that is used to validate the current configuration
+      if (nextCheckpoint >= checkpoint) {
+        revert WrongChainedCheckpointOrder(nextCheckpoint, checkpoint);
+      }
 
-    if (prevCheckpoint <= getLastAuthCheckpoint()) {
-      revert WrongFinalCheckpoint(prevCheckpoint, getLastAuthCheckpoint());
+      checkpoint = nextCheckpoint;
+      rindex = nrindex;
     }
   }
 }

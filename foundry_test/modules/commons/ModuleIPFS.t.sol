@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: Apache-2.0
-pragma solidity 0.8.17;
+pragma solidity 0.8.18;
 
 import "contracts/modules/commons/ModuleIPFS.sol";
 
@@ -43,7 +43,7 @@ contract ModuleIPFSTest is AdvTest {
   }
 
   function test_fail_updateIPFSRoot_notSelf(address _notSelf) external {
-    _notSelf = boundDiff(_notSelf, address(module));
+    boundDiff(_notSelf, address(module));
 
     vm.prank(address(_notSelf));
     vm.expectRevert(abi.encodeWithSignature('OnlySelfAuth(address,address)', _notSelf, address(module)));

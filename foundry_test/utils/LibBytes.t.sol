@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: Apache-2.0
-pragma solidity 0.8.17;
+pragma solidity 0.8.18;
 
 import "contracts/utils/LibBytes.sol";
 
@@ -19,6 +19,10 @@ contract LibBytesImp {
 
   function readFirstUint16(bytes calldata _data) external pure returns (uint16) {
     return _data.readFirstUint16();
+  }
+
+  function readUint32(bytes calldata _data, uint256 _index) external pure returns (uint32) {
+    return _data.readUint32(_index);
   }
 }
 
@@ -87,5 +91,11 @@ contract LibBytesTest is AdvTest {
     uint16 actual = lib.readFirstUint16(_data);
 
     assertEq(expected >> 240, actual);
+  }
+
+  function test_readUint32(bytes calldata _prefix, uint32 _data, bytes calldata _sufix) external {
+    bytes memory combined = abi.encodePacked(_prefix, _data, _sufix);
+    uint32 expected = lib.readUint32(combined, _prefix.length);
+    assertEq(expected, _data);
   }
 }

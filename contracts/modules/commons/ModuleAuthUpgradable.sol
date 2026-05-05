@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: Apache-2.0
-pragma solidity 0.8.17;
+pragma solidity 0.8.18;
 
 import "./interfaces/IModuleAuthUpgradable.sol";
 
@@ -12,11 +12,8 @@ abstract contract ModuleAuthUpgradable is IModuleAuthUpgradable, ModuleSelfAuth,
   /**
    * @notice Updates the signers configuration of the wallet
    * @param _imageHash New required image hash of the signature
-   * @dev It is recommended to not have more than 200 signers as opcode repricing
-   *      could make transactions impossible to execute as all the signers must be
-   *      passed for each transaction.
    */
-  function updateImageHash(bytes32 _imageHash) external override virtual onlySelf {
+  function _updateImageHash(bytes32 _imageHash) internal override virtual {
     if (_imageHash == bytes32(0)) revert ImageHashIsZero();
     ModuleStorage.writeBytes32(IMAGE_HASH_KEY, _imageHash);
     emit ImageHashUpdated(_imageHash);

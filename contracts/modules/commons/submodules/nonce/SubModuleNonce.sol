@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: Apache-2.0
-pragma solidity 0.8.17;
+pragma solidity 0.8.18;
 
 
 library SubModuleNonce {
@@ -7,7 +7,7 @@ library SubModuleNonce {
   //
   // - space[160]:nonce[96]
   //
-  uint256 internal constant SPACE_SHIFT = 96;
+  uint256 internal constant NONCE_BITS = 96;
   bytes32 internal constant NONCE_MASK = bytes32(uint256(type(uint96).max));
 
   /**
@@ -23,7 +23,7 @@ library SubModuleNonce {
   ) {
     unchecked {
       // Decode nonce
-      _space = _rawNonce >> SPACE_SHIFT;
+      _space = _rawNonce >> NONCE_BITS;
       _nonce = uint256(bytes32(_rawNonce) & NONCE_MASK);
     }
   }

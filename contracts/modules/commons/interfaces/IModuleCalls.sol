@@ -1,15 +1,14 @@
 // SPDX-License-Identifier: Apache-2.0
-pragma solidity 0.8.17;
-pragma experimental ABIEncoderV2;
+pragma solidity 0.8.18;
 
 
 interface IModuleCalls {
   // Events
-  event TxFailed(bytes32 _tx, bytes _reason);
-  event TxExecuted(bytes32 _tx) anonymous;
+  event TxFailed(bytes32 indexed _tx, uint256 _index, bytes _reason);
+  event TxExecuted(bytes32 indexed _tx, uint256 _index);
 
   // Errors
-  error NotEnoughGas(uint256 _requested, uint256 _available);
+  error NotEnoughGas(uint256 _index, uint256 _requested, uint256 _available);
   error InvalidSignature(bytes32 _hash, bytes _signature);
 
   // Transaction structure

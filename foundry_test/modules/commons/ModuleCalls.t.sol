@@ -1,7 +1,8 @@
 // SPDX-License-Identifier: Apache-2.0
-pragma solidity 0.8.17;
+pragma solidity 0.8.18;
 
 import "contracts/modules/commons/ModuleCalls.sol";
+import "contracts/Factory.sol";
 
 import "foundry_test/base/AdvTest.sol";
 
@@ -86,24 +87,24 @@ contract ModuleCallsImp is ModuleCalls {
     bytes calldata _signature
   ) internal override view returns (
     bool isValid,
-    bytes32 subDigest
+    bytes32 subdigest
   ) {
-    subDigest = sigToSubdigest[_digest][_signature];
+    subdigest = sigToSubdigest[_digest][_signature];
     isValid = sigToIsValid[_digest][_signature];
   }
 
   function mockSignature(
     bytes32 _digest,
     bytes calldata _signature,
-    bytes32 _subDigest,
+    bytes32 _subdigest,
     bool _isValid
   ) external  {
-    sigToSubdigest[_digest][_signature] = _subDigest;
+    sigToSubdigest[_digest][_signature] = _subdigest;
     sigToIsValid[_digest][_signature] = _isValid;
   }
 
   function signatureRecovery(bytes32, bytes calldata) public override view returns (
-    uint256, uint256, bytes32, bytes32
+    uint256, uint256, bytes32, bytes32, uint256
   ) {
   }
 
@@ -112,13 +113,20 @@ contract ModuleCallsImp is ModuleCalls {
 
   function updateImageHash(bytes32) external override {
   }
+
+  function _updateImageHash(bytes32) internal override {
+  }
 }
 
 contract ModuleCallsTest is AdvTest {
+  ModuleCallsImp private template;
   ModuleCallsImp private imp;
+  Factory private factory;
 
   function setUp() external {
-    imp = new ModuleCallsImp();
+    template = new ModuleCallsImp();
+    factory = new Factory();
+    imp = ModuleCallsImp(factory.deploy(address(template), bytes32(0)));
   }
 
   struct ToValAndData {
@@ -140,7 +148,7 @@ contract ModuleCallsTest is AdvTest {
 
     for (uint256 i = 0; i < size; i++) {
       txs[i].data = _rtxs[i].data;
-      txs[i].target = boundNoSys(_rtxs[i].target);
+      txs[i].target = boundNoBalance(boundNoContract(boundDiff(boundNoSys(_rtxs[i].target), address(template), address(imp), address(factory))));
       txs[i].value = bound(_rtxs[i].value, 0, type(uint256).max - total);
 
       total += txs[i].value;
@@ -199,7 +207,7 @@ contract ModuleCallsTest is AdvTest {
         txs[i].revertOnError = _revertsOnErr;
         txs[i].delegateCall = _delegateCall;
       } else {
-        txs[i].target = boundNoSys(_rtxs[i].target);
+        txs[i].target = boundNoBalance(boundNoContract(boundDiff(boundNoSys(_rtxs[i].target), address(template), address(imp), address(factory))));
       }
 
       txs[i].data = _rtxs[i].data;
@@ -263,7 +271,7 @@ contract ModuleCallsTest is AdvTest {
 
     for (uint256 i = 0; i < size; i++) {
       txs[i].data = _rtxs[i].data;
-      txs[i].target = boundNoSys(_rtxs[i].target);
+      txs[i].target = boundNoBalance(boundNoContract(boundDiff(boundNoSys(_rtxs[i].target), address(template), address(imp), address(factory))));
       txs[i].value = bound(_rtxs[i].value, 0, type(uint256).max - total);
 
       total += txs[i].value;
@@ -345,5 +353,23 @@ contract ModuleCallsTest is AdvTest {
 
     vm.expectRevert(abi.encodeWithSignature('BadNonce(uint256,uint256,uint256)', _space, _nonce, _badprev));
     imp.validateNonce(encoded);
+  }
+
+  function test_fail_noDelegatecall(ToValAndData[] memory _rtxs, bytes memory _sig, uint256 _nonce) external {
+    uint256 size = mayBoundArr(_rtxs.length);
+    IModuleCalls.Transaction[] memory txs = new IModuleCalls.Transaction[](size);
+    uint256 total;
+
+    for (uint256 i = 0; i < size; i++) {
+      txs[i].data = _rtxs[i].data;
+      txs[i].target = boundNoSys(_rtxs[i].target);
+      txs[i].value = bound(_rtxs[i].value, 0, type(uint256).max - total);
+
+      total += txs[i].value;
+    }
+
+    vm.deal(address(imp), total);
+    vm.expectRevert(abi.encodeWithSignature('OnlyDelegatecall()'));
+    template.execute(txs, _nonce, _sig);
   }
 }

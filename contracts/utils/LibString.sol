@@ -1,27 +1,45 @@
 // SPDX-License-Identifier: Apache-2.0
-pragma solidity 0.8.17;
+pragma solidity 0.8.18;
 
-
+/**
+ * @title Library for string manipulation operations
+ * @notice This library contains functions for manipulating strings in Solidity.
+ */
 library LibString {
   bytes private constant ALPHABET_HEX_16 = '0123456789abcdef';
   bytes private constant ALPHABET_32 = 'abcdefghijklmnopqrstuvwxyz234567';
 
+  /**
+   * @notice Prefixes a hexadecimal string with "0x".
+   * @param _hex The hexadecimal string to prefix.
+   * @return The prefixed hexadecimal string.
+   */
   function prefixHexadecimal(string memory _hex) internal pure returns (string memory) {
     return string(abi.encodePacked('0x', _hex));
   }
 
+  /**
+   * @notice Prefixes a base32 string with "b".
+   * @param _base32 The base32 string to prefix.
+   * @return The prefixed base32 string.
+   */
   function prefixBase32(string memory _base32) internal pure returns (string memory) {
     return string(abi.encodePacked('b', _base32));
   }
 
+  /**
+   * @notice Converts a byte array to a hexadecimal string.
+   * @param _bytes The byte array to convert.
+   * @return The resulting hexadecimal string.
+   */
   function bytesToHexadecimal(bytes memory _bytes) internal pure returns (string memory) {
     uint256 bytesLength = _bytes.length;
-    bytes memory bytesArray = new bytes(bytesLength * 2);
+    bytes memory bytesArray = new bytes(bytesLength << 1);
 
     unchecked {
       for (uint256 i = 0; i < bytesLength; i++) {
         uint256 word = uint8(_bytes[i]);
-        uint256 ib = i * 2;
+        uint256 ib = i << 1;
         bytesArray[ib] = bytes1(ALPHABET_HEX_16[word >> 4]);
         bytesArray[ib + 1] = bytes1(ALPHABET_HEX_16[word & 0xf]);
       }
@@ -30,16 +48,19 @@ library LibString {
     return string(bytesArray);
   }
 
+  /**
+   * @notice Converts a byte array to a base32 string.
+   * @param _bytes The byte array to convert.
+   * @return The resulting base32 string.
+   */
   function bytesToBase32(bytes memory _bytes) internal pure returns (string memory) {
     uint256 bytesLength = _bytes.length;
 
-    uint256 t1 = bytesLength * 8;
+    uint256 t1 = bytesLength << 3;
 
     unchecked {
-      uint256 newSize = t1 / 5;
-      if (t1 % 5 != 0) newSize++;
-
-      bytes memory bytesArray = new bytes(newSize);
+      // base32-encoded length = ceil(# of bits / 5)
+      bytes memory bytesArray = new bytes((t1 + 4) / 5);
 
       uint256 bits = 0;
       uint256 buffer = 0;

@@ -19,28 +19,32 @@ const ganacheNetwork = {
 
 const config: HardhatUserConfig = {
   solidity: {
-    version: '0.8.17',
+    version: '0.8.18',
     settings: {
       optimizer: {
         enabled: true,
-        runs: 4294967295
+        runs: 500000,
       }
     }
   },
   networks: {
     mainnet: networkConfig('mainnet'),
     ropsten: networkConfig('ropsten'),
-    rinkeby: networkConfig('rinkeby'),
     kovan: networkConfig('kovan'),
     goerli: networkConfig('goerli'),
-    matic: networkConfig('matic'),
+    polygon: networkConfig('polygon'),
+    polygonZkevm: networkConfig('polygon-zkevm'),
     mumbai: networkConfig('mumbai'),
     arbitrum: networkConfig('arbitrum'),
-    arbitrumTestnet: networkConfig('arbitrum-testnet'),
+    arbitrumGoerli: networkConfig('arbitrum-goerli'),
+    arbitrumNova: networkConfig('arbitrum-nova'),
+    optimism: networkConfig('optimism'),
+    bnb: networkConfig('bnb'),
+    bnbTestnet: networkConfig('bnb-testnet'),
+    gnosis: networkConfig('gnosis'),
+    avalanche: networkConfig('avalanche'),
+    avalancheFuji: networkConfig('avalanche-fuji'),
     ganache: ganacheNetwork,
-    coverage: {
-      url: 'http://localhost:8555'
-    },
     hardhat: {
       blockGasLimit: 60000000
     }

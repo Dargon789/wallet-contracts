@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: Apache-2.0
-pragma solidity 0.8.17;
+pragma solidity 0.8.18;
 
 import "../interfaces/IERC1271Wallet.sol";
 
@@ -13,6 +13,7 @@ import "./LibBytes.sol";
 library SignatureValidator {
   // Errors
   error InvalidSignatureLength(bytes _signature);
+  error EmptySignature();
   error InvalidSValue(bytes _signature, bytes32 _s);
   error InvalidVValue(bytes _signature, uint256 _v);
   error UnsupportedSignatureType(bytes _signature, uint256 _type, bool _recoverMode);
@@ -92,11 +93,7 @@ library SignatureValidator {
       );
 
     } else {
-      // Anything other signature types are illegal (We do not return false because
-      // the signature may actually be valid, just not in a format
-      // that we currently support. In this case returning false
-      // may lead the caller to incorrectly believe that the
-      // signature was invalid.)
+      // We cannot recover the signer for any other signature type.
       revert UnsupportedSignatureType(_signature, signatureType, true);
     }
 
@@ -118,8 +115,11 @@ library SignatureValidator {
     address _signer,
     bytes calldata _signature
   ) internal view returns (bool valid) {
-    uint256 signatureType = uint8(_signature[_signature.length - 1]);
+    if (_signature.length == 0) {
+      revert EmptySignature();
+    }
 
+    uint256 signatureType = uint8(_signature[_signature.length - 1]);
     if (signatureType == SIG_TYPE_EIP712 || signatureType == SIG_TYPE_ETH_SIGN) {
       // Recover signer and compare with provided
       valid = recoverSigner(_hash, _signature) == _signer;
@@ -129,11 +129,8 @@ library SignatureValidator {
       valid = ERC1271_MAGICVALUE_BYTES32 == IERC1271Wallet(_signer).isValidSignature(_hash, _signature[0:_signature.length - 1]);
 
     } else {
-      // Anything other signature types are illegal (We do not return false because
-      // the signature may actually be valid, just not in a format
-      // that we currently support. In this case returning false
-      // may lead the caller to incorrectly believe that the
-      // signature was invalid.)
+      // We cannot validate any other signature type.
+      // We revert because we can say nothing about its validity.
       revert UnsupportedSignatureType(_signature, signatureType, false);
     }
   }

@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: Apache-2.0
-pragma solidity 0.8.17;
+pragma solidity 0.8.18;
 
 import "./interfaces/IModuleHooks.sol";
 
@@ -29,7 +29,7 @@ contract ModuleHooks is IERC1155Receiver, IERC721Receiver, IModuleHooks, ModuleE
    * @notice Adds a new hook to handle a given function selector
    * @param _signature Signature function linked to the hook
    * @param _implementation Hook implementation contract
-   * @dev Can't overwrite hooks that are part of the mainmodule (those defined below)
+   * @dev Can't overwrite hooks that are part of the main module (those defined below)
    */
   function addHook(bytes4 _signature, address _implementation) external override virtual onlySelf {
     if (_readHook(_signature) != address(0)) revert HookAlreadyExists(_signature);
@@ -39,7 +39,7 @@ contract ModuleHooks is IERC1155Receiver, IERC721Receiver, IModuleHooks, ModuleE
   /**
    * @notice Removes a registered hook
    * @param _signature Signature function linked to the hook
-   * @dev Can't remove hooks that are part of the mainmodule (those defined below) 
+   * @dev Can't remove hooks that are part of the main module (those defined below)
    *      without upgrading the wallet
    */
   function removeHook(bytes4 _signature) external override virtual onlySelf {
@@ -63,6 +63,7 @@ contract ModuleHooks is IERC1155Receiver, IERC721Receiver, IModuleHooks, ModuleE
   */
   function _writeHook(bytes4 _signature, address _implementation) private {
     ModuleStorage.writeBytes32Map(HOOKS_KEY, _signature, bytes32(uint256(uint160(_implementation))));
+    emit DefinedHook(_signature, _implementation);
   }
 
   /**
@@ -105,15 +106,17 @@ contract ModuleHooks is IERC1155Receiver, IERC721Receiver, IModuleHooks, ModuleE
    * @notice Routes fallback calls through hooks
    */
   fallback() external payable {
-    address target = _readHook(msg.sig);
-    if (target != address(0)) {
-      (bool success, bytes memory result) = target.delegatecall(msg.data);
-      assembly {
-        if iszero(success)  {
-          revert(add(result, 0x20), mload(result))
-        }
+    if (msg.data.length >= 4) {
+      address target = _readHook(msg.sig);
+      if (target != address(0)) {
+        (bool success, bytes memory result) = target.delegatecall(msg.data);
+        assembly {
+          if iszero(success)  {
+            revert(add(result, 0x20), mload(result))
+          }
 
-        return(add(result, 0x20), mload(result))
+          return(add(result, 0x20), mload(result))
+        }
       }
     }
   }

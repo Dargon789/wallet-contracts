@@ -1,11 +1,11 @@
 // SPDX-License-Identifier: Apache-2.0
-pragma solidity 0.8.17;
-pragma experimental ABIEncoderV2;
+pragma solidity 0.8.18;
 
 import "./ModuleSelfAuth.sol";
 import "./ModuleStorage.sol";
 import "./ModuleERC165.sol";
 import "./ModuleNonce.sol";
+import "./ModuleOnlyDelegatecall.sol";
 
 import "./interfaces/IModuleCalls.sol";
 import "./interfaces/IModuleAuth.sol";
@@ -16,7 +16,7 @@ import "./submodules/auth/SequenceBaseSig.sol";
 import "../../utils/LibOptim.sol";
 
 
-abstract contract ModuleCalls is IModuleCalls, IModuleAuth, ModuleERC165, ModuleSelfAuth, ModuleNonce {
+abstract contract ModuleCalls is IModuleCalls, IModuleAuth, ModuleERC165, ModuleOnlyDelegatecall, ModuleSelfAuth, ModuleNonce {
   /**
    * @notice Allow wallet owner to execute an action
    * @dev Relayers must ensure that the gasLimit specified for each transaction
@@ -30,7 +30,7 @@ abstract contract ModuleCalls is IModuleCalls, IModuleAuth, ModuleERC165, Module
     Transaction[] calldata _txs,
     uint256 _nonce,
     bytes calldata _signature
-  ) external override virtual {
+  ) external override virtual onlyDelegatecall {
     // Validate and update nonce
     _validateNonce(_nonce);
 
@@ -62,7 +62,7 @@ abstract contract ModuleCalls is IModuleCalls, IModuleAuth, ModuleERC165, Module
     Transaction[] calldata _txs
   ) external override virtual onlySelf {
     // Hash transaction bundle
-    bytes32 txHash = SequenceBaseSig.subDigest(
+    bytes32 txHash = SequenceBaseSig.subdigest(
       keccak256(
         abi.encode('self:', _txs)
       )
@@ -88,7 +88,7 @@ abstract contract ModuleCalls is IModuleCalls, IModuleAuth, ModuleERC165, Module
         Transaction calldata transaction = _txs[i];
         uint256 gasLimit = transaction.gasLimit;
 
-        if (gasleft() < gasLimit) revert NotEnoughGas(gasLimit, gasleft());
+        if (gasleft() < gasLimit) revert NotEnoughGas(i, gasLimit, gasleft());
 
         bool success;
         if (transaction.delegateCall) {
@@ -107,16 +107,17 @@ abstract contract ModuleCalls is IModuleCalls, IModuleAuth, ModuleERC165, Module
         }
 
         if (success) {
-          emit TxExecuted(_txHash);
+          emit TxExecuted(_txHash, i);
         } else {
           // Avoid copy of return data until neccesary
           _revertBytes(
             transaction.revertOnError,
             _txHash,
+            i,
             LibOptim.returnData()
           );
         }
-      } 
+      }
     }
   }
 
@@ -124,17 +125,19 @@ abstract contract ModuleCalls is IModuleCalls, IModuleAuth, ModuleERC165, Module
    * @notice Logs a failed transaction, reverts if the transaction is not optional
    * @param _revertOnError  Signals if it should revert or just log
    * @param _txHash         Hash of the transaction
+   * @param _index          Index of the transaction in the batch
    * @param _reason         Encoded revert message
    */
   function _revertBytes(
     bool _revertOnError,
     bytes32 _txHash,
+    uint256 _index,
     bytes memory _reason
   ) internal {
     if (_revertOnError) {
       assembly { revert(add(_reason, 0x20), mload(_reason)) }
     } else {
-      emit TxFailed(_txHash, _reason);
+      emit TxFailed(_txHash, _index, _reason);
     }
   }
 
