@@ -83,7 +83,8 @@ function hasGlobalInstallation(pm: PackageManager): boolean {
       encoding: 'utf-8',
       stdio: 'pipe',
     })
-    const isGlobal = /^\d+\.\d+\.\d+([-+].*)?$/.test(result.trim())
+    // Treat output as a semver-like version (e.g. 1.2.3, 1.2.3-beta.1, 1.2.3+build.1)
+    const isGlobal = /^\d+\.\d+\.\d+([-+][0-9A-Za-z-.]+)?$/.test(result.trim())
     cache.set(key, isGlobal)
     return isGlobal
   } catch {
