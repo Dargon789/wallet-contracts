@@ -83,7 +83,7 @@ function hasGlobalInstallation(pm: PackageManager): boolean {
       encoding: 'utf-8',
       stdio: 'pipe',
     })
-    const isGlobal = /^\d+\.\d+\.\d+$/.test(result.trim())
+    const isGlobal = /^\d+\.\d+\.\d+/.test(result.trim())
     cache.set(key, isGlobal)
     return isGlobal
   } catch {
