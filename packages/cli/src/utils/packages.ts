@@ -84,7 +84,6 @@ function hasGlobalInstallation(pm: PackageManager): boolean {
       stdio: 'pipe',
     })
     const isGlobal = /^v?\d+\.\d+\.\d+([-+].*)?$/.test(result.trim())
-    const isGlobal = /^\d+\.\d+\.\d+([-+][0-9A-Za-z-.]+)?$/.test(result.trim())
     cache.set(key, isGlobal)
     return isGlobal
   } catch {
