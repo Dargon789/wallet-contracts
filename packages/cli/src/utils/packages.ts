@@ -80,9 +80,10 @@ function hasGlobalInstallation(pm: PackageManager): boolean {
 
   try {
     const result = execSync(`${pm} --version`, {
+      encoding: 'utf-8',
+      stdio: 'pipe',
     })
-    const version = result.trim().replace(/^v/, '')
-    const isGlobal = /^\d+\.\d+\.\d+([-+][0-9A-Za-z-.]+)?$/.test(version)
+    const isGlobal = /^\d+\.\d+\.\d+/.test(result.trim())
     cache.set(key, isGlobal)
     return isGlobal
   } catch {
