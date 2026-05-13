@@ -3,7 +3,7 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "build": "pnpm run --filter @wagmi/core --filter @wagmi/cli build && pnpm run --filter @wagmi/connectors build && pnpm run --filter wagmi --filter @wagmi/vue build",
+    "build": "pnpm run -r --filter {@wagmi/core,@wagmi/cli,@wagmi/connectors,wagmi,@wagmi/vue} build",
     "bench:types": "TYPES=true vitest bench-d.ts",
     "changeset:prepublish": "pnpm clean && pnpm version:update && pnpm build && node scripts/formatPackageJson.ts && node scripts/generateProxyPackages.ts",
     "changeset:publish": "pnpm changeset:prepublish && changeset publish",
@@ -44,7 +44,7 @@
     "@biomejs/biome": "^2.2.4",
     "@changesets/cli": "^3.0.0-next.0",
     "@svitejs/changesets-changelog-github-compact": "^1.2.0",
-    "@types/node": "^24.5.1",
+    "@types/node": "^22.0.0",
     "@vitejs/plugin-react": "catalog:",
     "@vitest/browser": "^4.0.16",
     "@vitest/browser-playwright": "^4.0.16",
@@ -70,7 +70,7 @@
   "devEngines": {
     "runtime": {
       "name": "node",
-      "version": "^24.5.1",
+      "version": "^22.0.0",
       "onFail": "download"
     }
   },

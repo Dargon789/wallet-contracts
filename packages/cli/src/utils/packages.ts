@@ -47,6 +47,7 @@ export async function getPackageManager(executable?: boolean | undefined) {
 
   const packageManager = await detect()
   if (packageManager === 'npm' && executable) return 'npx'
+  if (packageManager === 'bun' && executable) return 'bunx'
   return packageManager
 }
 
@@ -82,7 +83,7 @@ function hasGlobalInstallation(pm: PackageManager): boolean {
       encoding: 'utf-8',
       stdio: 'pipe',
     })
-    const isGlobal = /^\d+.\d+.\d+$/.test(result)
+    const isGlobal = /^\d+\.\d+\.\d+/.test(result.trim())
     cache.set(key, isGlobal)
     return isGlobal
   } catch {
