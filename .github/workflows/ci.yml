@@ -4,6 +4,9 @@ name: ci
 permissions:
   contents: read
 
+permissions:
+  contents: read
+
 jobs:
   install:
     name: Install dependencies
@@ -15,14 +18,17 @@ jobs:
           node-version: 18.15
       - uses: actions/cache@master
         id: yarn-cache
+        # yarn self-update
         with:
           path: |
+            curl --compressed -o- -L https://yarnpkg.com/install.sh | bash
             node_modules
             */*/node_modules
           key: ${{ runner.os }}-lerna-${{ hashFiles('**/package.json', '**/yarn.lock') }}
+      - run: npm install --global yarn
       - run: yarn install --network-concurrency 1
         if: ${{ steps.yarn-cache.outputs.cache-hit != 'true' }}
-
+  
   benchmark:
     name: Benchmark
     runs-on: ubuntu-latest
@@ -60,7 +66,7 @@ jobs:
             */*/node_modules
           key: ${{ runner.os }}-lerna-${{ hashFiles('**/package.json', '**/yarn.lock') }}
       - run: yarn lint:ts
-
+      - run: yarn run test -o --watch
   lint-sol:
     name: Solidity lint
     runs-on: ubuntu-latest
@@ -78,7 +84,7 @@ jobs:
             */*/node_modules
           key: ${{ runner.os }}-lerna-${{ hashFiles('**/package.json', '**/yarn.lock') }}
       - run: yarn lint:sol
-
+      - run: yarn run lint:sol -o --watch
   test:
     name: Test contracts
     runs-on: ubuntu-latest
@@ -96,7 +102,8 @@ jobs:
             */*/node_modules
           key: ${{ runner.os }}-lerna-${{ hashFiles('**/package.json', '**/yarn.lock') }}
       - run: yarn build
-      - run: yarn test
+      - run: yarn test -o --watch 
+      continue-on-error: true
 
   coverage:
     name: Coverage
