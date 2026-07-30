@@ -42,7 +42,7 @@ export const networkRpcUrl = (network: EthereumNetworksTypes): string => {
       return 'https://polygon-rpc.com'
 
     case 'arbitrum-testnet':
-      return 'https://rinkeby.arbitrum.io/rpc'
+      return 'https://sepolia-rollup.arbitrum.io/rpc'
     
     case 'arbitrum':
       return 'https://arb1.arbitrum.io/rpc'
