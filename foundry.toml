@@ -1,8 +1,7 @@
 [profile.default]
 src = "contracts"
 out = "out"
-libs = ["lib", "dependencies"]
-test = "foundry_test"
+libs = ["dependencies"]
 
 [dependencies]
 forge-std = "foundry-rs/forge-std@v1.14.0"

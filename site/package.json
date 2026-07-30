@@ -26,8 +26,5 @@
     "vitepress-plugin-llms": "^1.8.1",
     "vue": "catalog:",
     "wagmi": "workspace:*"
-  },
-  "dependencies": {
-    "@vercel/analytics": "^1.6.1"
   }
 }
