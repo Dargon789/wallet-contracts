@@ -87,6 +87,7 @@ function hasGlobalInstallation(pm: PackageManager): boolean {
     cache.set(key, isGlobal)
     return isGlobal
   } catch {
+    cache.set(key, false)
     return false
   }
 }
